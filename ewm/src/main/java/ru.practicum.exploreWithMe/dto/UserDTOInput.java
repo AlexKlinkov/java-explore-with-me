@@ -12,12 +12,9 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDTOInput {
-    private Long id;
     @NotEmpty
     @NotNull
     private String name;
     @Email
-    @NotNull
-    @NotEmpty
     private String email;
 }

@@ -4,21 +4,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
+import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.exploreWithMe.dto.EventShortDtoOutput;
 
+import java.net.http.HttpClient;
+import java.util.List;
+
+
 @Service
 public class EventClient {
     // This client sent request
-    private static final String API_PREFIX = "/hit";
-    final RestTemplate rest;
+    private final static String API_PREFIX = "/hit";
 
     @Autowired
     public EventClient(@Value("${exploreWithMeStatService.url}") String serverUrl, RestTemplateBuilder builder) {
-        this.rest = builder
+        RestTemplate rest =  builder
                 .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX))
                 .requestFactory(HttpComponentsClientHttpRequestFactory::new)
                 .build();

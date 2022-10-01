@@ -1,4 +1,4 @@
-package exeption;
+package ru.practicum.exploreWithMe.exeption;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
