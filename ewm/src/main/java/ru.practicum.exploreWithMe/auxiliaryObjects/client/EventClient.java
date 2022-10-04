@@ -28,8 +28,8 @@ public class EventClient {
                 .build();
     }
 
-    public ResponseEntity<Object> post(String path, EventShortDtoOutput body) {
-        return post(path, 1, null);
+    public ResponseEntity<Object> post(String path, List<EventShortDtoOutput> body) {
+        return post("", null);
     }
 
     public ResponseEntity<Object> post(String path, long userId, EventShortDtoOutput body) {
