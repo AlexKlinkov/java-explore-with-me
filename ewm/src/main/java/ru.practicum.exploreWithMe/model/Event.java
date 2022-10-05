@@ -3,7 +3,7 @@ package ru.practicum.exploreWithMe.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.geo.Point;
+
 import ru.practicum.exploreWithMe.auxiliaryObjects.StatusOfEvent;
 
 import javax.persistence.*;
@@ -37,15 +37,17 @@ public class Event {
     private Long confirmedRequests; // amount of persons who confirmed entrance
     @Column(name = "participant_limit")
     private Long participantLimit; // max amount of persons who can take part in this event
-    @Column(name = "location")
-    private Point location; // coordinates where event will be passing
+    @Column(name = "lat")
+    private Double lat;
+    @Column(name = "lon")
+    private Double lon;
     @Column(name = "created_on")
     private LocalDateTime createdOn; // date when initiator declared about event
     @Column(name = "published_on")
     private LocalDateTime publishedOn; // date when moderator checked this event with positive status
     @Column(name = "event_date")
     private LocalDateTime eventDate; // time of happening of event
-    @Column(name = "state")
+    @Column(name = "state", columnDefinition = "enum('PUBLISHED','PENDING','CANCELED')")
     @Enumerated(EnumType.STRING)
     private StatusOfEvent state; // status of event {PUBLISHED, WAITING....}
     @Column(name = "paid")

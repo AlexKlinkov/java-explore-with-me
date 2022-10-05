@@ -59,10 +59,11 @@ public class ParticipationRequestServiceInDB implements ParticipationRequestServ
     @Override
     public ParticipationRequestDtoOutput cancelOwnRequestPrivate(Long userId, Long requestId) {
         log.debug("Requestor refuse from participationRequest by path : '/users/{userId}/requests/{requestId}/cancel'");
+        participationRequestRepository.cancelOwnRequest(
+                userId, requestId, StatusOfParticipationRequest.CANCELED.toString()
+        );
         return participationRequestMapper.RequestDtoOutputFromParticipationRequest(
-                participationRequestRepository.cancelOwnRequest(
-                        userId, requestId, StatusOfParticipationRequest.CANCELED.toString()
-                )
+                participationRequestRepository.getByIdAndRequestorId(requestId, userId)
         );
     }
 }

@@ -5,11 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Component;
+import ru.practicum.exploreWithMe.auxiliaryObjects.Location;
 import ru.practicum.exploreWithMe.dto.EventFullDtoOutput;
 import ru.practicum.exploreWithMe.dto.EventShortDtoOutput;
 import ru.practicum.exploreWithMe.dto.NewEventDTOInput;
-import ru.practicum.exploreWithMe.model.Category;
 import ru.practicum.exploreWithMe.model.Event;
 import ru.practicum.exploreWithMe.repository.CategoryRepository;
 
@@ -40,12 +41,14 @@ public class EventMapperImplForBD implements EventMapper{
         event.setTitle(newEventDTOInput.getTitle());
         event.setPaid(newEventDTOInput.getPaid());
         event.setParticipantLimit(newEventDTOInput.getParticipantLimit());
-        event.setLocation(newEventDTOInput.getLocation());
+        event.setLat(newEventDTOInput.getLocation().getLat());
+        event.setLon(newEventDTOInput.getLocation().getLon());
+        //event.setLocation(new Point(newEventDTOInput.getLocation().getLat(), newEventDTOInput.getLocation().getLon()));
         event.setRequestModeration(newEventDTOInput.getRequestModeration());
         if (newEventDTOInput.getCategoryId() != null) {
             event.setCategory(categoryRepository.getReferenceById(newEventDTOInput.getCategoryId()));
         } else {
-            event.setCategory(new Category(1L, "Test"));
+            event.setCategory(null);
         }
         event.setCompilation(null);
         event.setConfirmedRequests(null);
@@ -72,7 +75,7 @@ public class EventMapperImplForBD implements EventMapper{
         eventShortDtoOutput.setCategory(categoryMapper.categoryDtoOutputFromCategory(event.getCategory()));
         eventShortDtoOutput.setPaid(event.getPaid());
         eventShortDtoOutput.setTitle(event.getTitle());
-        eventShortDtoOutput.setViews(event.getViews());
+        event.setConfirmedRequests(event.getConfirmedRequests());
         return eventShortDtoOutput;
     }
 
@@ -90,7 +93,8 @@ public class EventMapperImplForBD implements EventMapper{
         eventFullDtoOutput.setDescription(event.getDescription());
         eventFullDtoOutput.setPaid(event.getPaid());
         eventFullDtoOutput.setParticipantLimit(event.getParticipantLimit());
-        eventFullDtoOutput.setLocation(event.getLocation());
+        // eventFullDtoOutput.setLocation(new Location(event.getLocation().getX(), event.getLocation().getY()));
+        eventFullDtoOutput.setLocation(new Location(event.getLat(), event.getLon()));
         eventFullDtoOutput.setRequestModeration(event.getRequestModeration());
         eventFullDtoOutput.setCategory(categoryMapper.categoryDtoOutputFromCategory(event.getCategory()));
         eventFullDtoOutput.setConfirmedRequests(event.getConfirmedRequests());

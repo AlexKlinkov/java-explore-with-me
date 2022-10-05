@@ -8,14 +8,14 @@ import ru.practicum.exploreWithMe.model.ParticipationRequest;
 
 import javax.transaction.Transactional;
 import java.util.List;
-
 public interface ParticipationRequestRepository extends JpaRepository<ParticipationRequest, Long> {
     List<ParticipationRequest> getAllByRequestorId(Long requestorId);
+    ParticipationRequest getByIdAndRequestorId(Long requestId, Long userId);
     @Transactional
     @Modifying
     @Query("update ParticipationRequest p set p.status = :status where p.requestor.id = :requestorId " +
             "and p.id = :requestId")
-    ParticipationRequest cancelOwnRequest (@Param("requestorId") Long requestorId,
+    void cancelOwnRequest (@Param("requestorId") Long requestorId,
                                  @Param("requestId") Long requestId,
                                  @Param("status") String status);
 }

@@ -58,7 +58,7 @@ public interface EventService {
     List<EventFullDtoOutput> getEventsAdmin(List<Long> users, List<String> states, List<Long> categories,
                                             String rangeStart, String rangeEnd, Long from, Long size);
     // PUT admin/events/{eventId}
-    EventShortDtoOutput editEventByAdmin(Long eventId);
+    EventFullDtoOutput editEventByAdmin(Long eventId, NewEventDTOInput newEventDTOInput);
     // date of start event has to be minimum for 1 hours till published date
     // status of event has to be PENDING
     // PATCH admin/events/{eventId}/publish

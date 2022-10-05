@@ -1,12 +1,10 @@
 package ru.practicum.exploreWithMe.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import ru.practicum.exploreWithMe.auxiliaryObjects.StatusOfEvent;
-import ru.practicum.exploreWithMe.model.Category;
-import ru.practicum.exploreWithMe.model.User;
 
 import java.time.LocalDateTime;
 
@@ -20,7 +18,8 @@ public class EventShortDtoOutput {
    private CategoryDtoOutput category; // category of event
    private UserShortDtoOutput initiator; // a person who declare about this event
    private Long confirmedRequests; // amount of persons who got permission to visit this event
-   @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "yyyy-MM-dd HH:mm:ss")
+   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
    private LocalDateTime eventDate; // time of happening of event
    private Boolean paid; // indicator which indicates event is free or for the money
    private Long views; // amount views of persons who was interested in an event

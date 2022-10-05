@@ -1,10 +1,14 @@
 package ru.practicum.exploreWithMe.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.geo.Point;
+import org.springframework.format.annotation.DateTimeFormat;
+import ru.practicum.exploreWithMe.auxiliaryObjects.Location;
 
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
@@ -20,12 +24,15 @@ public class NewEventDTOInput {
     @Size(min = 20, max = 7000)
     private String description; // full and precise description of event
     @Positive
+    @JsonProperty(value = "category")
     private Long categoryId; // id of category
     @Value("0")
     private Long participantLimit; // max amount of persons who can take part in this event,
     // also ZERO means lack of restrictions on filling this event by people
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate; // time of happening of event
-    private Point location; // coordinates where event will be passing
+    private Location location; // coordinates where event will be passing
     @Value("false")
     private Boolean paid; // indicator which indicates event is free or for the money
     @Value("true")
