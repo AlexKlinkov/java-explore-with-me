@@ -57,12 +57,12 @@ public class CategoryServiceTest {
         Assertions.assertEquals(category.getId(), categoryRepository.getReferenceById(1L).getId());
     }
 
-/*    @Test
+    @Test
     public void updateCategoryTest() {
-        when(categoryRepository.update(category.getId(), category.getName())).thenReturn(category);
+        when(categoryRepository.save(category)).thenReturn(category);
         categoryServiceInBD.updateCategory(categoryDTOInput);
-        Assertions.assertEquals(category, categoryRepository.update(category.getId(), category.getName()));
-    }*/
+        Assertions.assertEquals(categoryRepository.save(category).getName(), category.getName());
+    }
 
     @Test
     public void createCategoryTest() {

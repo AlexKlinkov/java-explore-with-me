@@ -6,6 +6,7 @@ import ru.practicum.exploreWithMe.dto.NewEventDTOInput;
 import ru.practicum.exploreWithMe.dto.ParticipationRequestDtoOutput;
 
 import java.util.List;
+import java.util.Set;
 
 public interface EventService {
     // This method return only PUBLISHED events according chosen params:
@@ -25,8 +26,9 @@ public interface EventService {
     // This method return only PUBLISHED event by ID
     // information about this method was invoked have to be saved in stat service
     EventFullDtoOutput getEventByIdPublic(Long eventId); // GET /events/{eventId} (PUBLIC)
+    // This method return list with events which belongs only initiator of this events
     // GET /users/{userId}/events (PRIVATE)
-    List<EventShortDtoOutput> getEventsPrivate (Long userId, Long from, Long size);
+    List<EventFullDtoOutput> getEventsPrivate (Long userId, Long from, Long size);
     // only refused events or waiting moderation by admin can be changed
     // PATCH /users/{userId}/events (PRIVATE)
     EventFullDtoOutput updateEventPrivate(Long userId, NewEventDTOInput newEventDTOInput);
@@ -37,9 +39,9 @@ public interface EventService {
     EventFullDtoOutput getFullInfoAboutEventByUserWhoCreatedThisEventPrivate(Long userId, Long eventId);
     // only events is waited moderation by admin can be canceled
     // PATCH /users/{userId}/events/{eventId} (PRIVATE)
-    EventFullDtoOutput cancelEventPrivate(Long userId, NewEventDTOInput newEventDTOInput);
+    EventFullDtoOutput cancelEventPrivate(Long userId, Long eventId);
     // GET /users/{userId}/events/{eventId}/requests (PRIVATE)
-    ParticipationRequestDtoOutput getParticipationInformationAboutUserPrivate(Long userId, Long eventId);
+    Set<ParticipationRequestDtoOutput> getParticipationInformationAboutUserPrivate(Long userId, Long eventId);
     // if ParticipationLimit is 0 or pre moderation authorization is turn off,
     // that means approving of request is not necessary.
     // if ParticipationLimit was achieved, request cannot be approved and leftover of requests should be canceled

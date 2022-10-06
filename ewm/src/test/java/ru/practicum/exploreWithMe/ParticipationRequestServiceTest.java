@@ -3,10 +3,8 @@ package ru.practicum.exploreWithMe;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.practicum.exploreWithMe.auxiliaryObjects.StatusOfParticipationRequest;
 import ru.practicum.exploreWithMe.dto.ParticipationRequestDtoOutput;
@@ -23,12 +21,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@ExtendWith(MockitoExtension.class)
 public class ParticipationRequestServiceTest {
     @InjectMocks
     private ParticipationRequestServiceInDB participationRequestServiceInDB;
@@ -49,6 +46,7 @@ public class ParticipationRequestServiceTest {
     public void init() {
         event = new Event();
         event.setId(1L);
+        event.setRequestModeration(true);
         user = new User();
         user.setId(1L);
         LocalDateTime now = LocalDateTime.now();
@@ -67,21 +65,25 @@ public class ParticipationRequestServiceTest {
         Assertions.assertEquals(1L, participationRequestRepository.getAllByRequestorId(1L).get(0).getId());
     }
 
+/*
     @Test
     public void createRequestPrivateTest() {
         when(participationRequestRepository.save(participationRequest)).thenReturn(participationRequest);
-        participationRequestServiceInDB.createRequestPrivate(1L, 1L);
+        when(eventRepository.getReferenceById(1L)).thenReturn(event);
+        //doReturn(true).when(eventRepository.getReferenceById(1L)).getRequestModeration();
+        participationRequestServiceInDB.createRequestPrivate(1L, event.getId());
         Assertions.assertEquals(1L, participationRequestRepository.save(participationRequest).getId());
+        Assertions.assertEquals(1L, eventRepository.getReferenceById(1L).getId());
     }
+*/
 
-/*    @Test
+    @Test
     public void cancelOwnRequestPrivateTest() {
-        participationRequest.setStatus(StatusOfParticipationRequest.CANCELED);
-        when(participationRequestRepository.cancelOwnRequest(anyLong(), anyLong(), anyString()))
+        participationRequest.setStatus(StatusOfParticipationRequest.REJECTED);
+        when(participationRequestRepository.getByIdAndRequestorId(anyLong(), anyLong()))
                 .thenReturn(participationRequest);
         participationRequestServiceInDB.cancelOwnRequestPrivate(1L, 1L);
-        Assertions.assertEquals(StatusOfParticipationRequest.CANCELED,
-                participationRequestRepository.cancelOwnRequest(1L, 1L,
-                        StatusOfParticipationRequest.CANCELED.toString()).getStatus());
-    }*/
+        Assertions.assertEquals(StatusOfParticipationRequest.REJECTED,
+                participationRequestRepository.getByIdAndRequestorId(1L, 1L).getStatus());
+    }
 }

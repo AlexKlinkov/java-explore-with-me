@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.exploreWithMe.auxiliaryObjects.StatusOfParticipationRequest;
 import ru.practicum.exploreWithMe.dto.ParticipationRequestDtoOutput;
 import ru.practicum.exploreWithMe.mapper.ParticipationRequestMapper;
+import ru.practicum.exploreWithMe.model.Event;
 import ru.practicum.exploreWithMe.model.ParticipationRequest;
 import ru.practicum.exploreWithMe.repository.EventRepository;
 import ru.practicum.exploreWithMe.repository.ParticipationRequestRepository;
@@ -35,7 +36,7 @@ public class ParticipationRequestServiceInDB implements ParticipationRequestServ
 
     @Override
     public List<ParticipationRequestDtoOutput> getRequestPrivate(Long userId) {
-        log.debug("Return all participationRequest for Requestor by path : '/users/{userId}/requests'");
+        log.debug("Return all participationRequest for Requester by path : '/users/{userId}/requests'");
         return participationRequestRepository.getAllByRequestorId(userId).stream()
                 .map(participationRequestMapper::RequestDtoOutputFromParticipationRequest)
                 .collect(Collectors.toList());
@@ -43,24 +44,29 @@ public class ParticipationRequestServiceInDB implements ParticipationRequestServ
 
     @Override
     public ParticipationRequestDtoOutput createRequestPrivate(Long userId, Long eventId) {
-        log.debug("Create participationRequest for Requestor by path : '/users/{userId}/requests'");
-        ParticipationRequest participationRequest = participationRequestRepository.save(
-                new ParticipationRequest(
-                        0L,
-                        eventRepository.getReferenceById(eventId),
-                        LocalDateTime.now(),
-                        userRepository.getReferenceById(userId),
-                        StatusOfParticipationRequest.PENDING
-                )
-        );
-        return participationRequestMapper.RequestDtoOutputFromParticipationRequest(participationRequest);
+        log.debug("Create participationRequest for Requester by path : '/users/{userId}/requests'");
+        // 1. Получаем событие
+        Event event = eventRepository.getReferenceById(eventId);
+        if (event.getRequestModeration().equals(true) || event.getParticipantLimit() > 0) {
+            ParticipationRequest participationRequest = participationRequestRepository.save(
+                    new ParticipationRequest(
+                            0L,
+                            eventRepository.getReferenceById(eventId),
+                            LocalDateTime.now(),
+                            userRepository.getReferenceById(userId),
+                            StatusOfParticipationRequest.PENDING
+                    )
+            );
+            return participationRequestMapper.RequestDtoOutputFromParticipationRequest(participationRequest);
+        }
+        return null;
     }
 
     @Override
     public ParticipationRequestDtoOutput cancelOwnRequestPrivate(Long userId, Long requestId) {
-        log.debug("Requestor refuse from participationRequest by path : '/users/{userId}/requests/{requestId}/cancel'");
+        log.debug("Requester refuse from participationRequest by path : '/users/{userId}/requests/{requestId}/cancel'");
         participationRequestRepository.cancelOwnRequest(
-                userId, requestId, StatusOfParticipationRequest.CANCELED.toString()
+                userId, requestId, StatusOfParticipationRequest.REJECTED
         );
         return participationRequestMapper.RequestDtoOutputFromParticipationRequest(
                 participationRequestRepository.getByIdAndRequestorId(requestId, userId)

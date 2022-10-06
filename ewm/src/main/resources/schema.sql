@@ -28,11 +28,11 @@ CREATE TABLE "compilations"
 
 CREATE TABLE "participation_requests"
 (
-    "id"          bigint PRIMARY KEY,
-    "eventId"     bigint,
-    "created"     timestamp with time zone,
-    "requestorId" bigint,
-    "status"      varchar
+    "id"           bigint generated always as identity not null primary key,
+    "event_id"     bigint,
+    "created"      timestamp with time zone,
+    "requestor_id" bigint,
+    "status"       varchar
 );
 
 CREATE TABLE "events"
@@ -59,25 +59,25 @@ CREATE TABLE "events"
 
 CREATE TABLE "comments"
 (
-    "id"       bigint generated always as identity not null primary key,
-    "eventId"  bigint,
-    "authorId" bigint,
-    "comment"  varchar,
-    "created"  timestamp with time zone
+    "id"        bigint generated always as identity not null primary key,
+    "event_id"  bigint,
+    "author_id" bigint,
+    "comment"   varchar,
+    "created"   timestamp with time zone
 );
 
 CREATE TABLE "compilation_events"
 (
-    "compilationId" bigint,
-    "eventId"       bigint,
-    PRIMARY KEY ("compilationId", "eventId")
+    "compilation_id" bigint,
+    "event_id"       bigint,
+    PRIMARY KEY ("compilation_id", "event_id")
 );
 
 ALTER TABLE "participation_requests"
-    ADD FOREIGN KEY ("eventId") REFERENCES "events" ("id");
+    ADD FOREIGN KEY ("event_id") REFERENCES "events" ("id");
 
 ALTER TABLE "participation_requests"
-    ADD FOREIGN KEY ("requestorId") REFERENCES "users" ("id");
+    ADD FOREIGN KEY ("requestor_id") REFERENCES "users" ("id");
 
 ALTER TABLE "events"
     ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id");
@@ -89,13 +89,13 @@ ALTER TABLE "events"
     ADD FOREIGN KEY ("compilation_id") REFERENCES "compilations" ("id");
 
 ALTER TABLE "comments"
-    ADD FOREIGN KEY ("eventId") REFERENCES "events" ("id");
+    ADD FOREIGN KEY ("event_id") REFERENCES "events" ("id");
 
 ALTER TABLE "comments"
-    ADD FOREIGN KEY ("authorId") REFERENCES "users" ("id");
+    ADD FOREIGN KEY ("author_id") REFERENCES "users" ("id");
 
 ALTER TABLE "compilation_events"
-    ADD FOREIGN KEY ("compilationId") REFERENCES "compilations" ("id");
+    ADD FOREIGN KEY ("compilation_id") REFERENCES "compilations" ("id");
 
 ALTER TABLE "compilation_events"
-    ADD FOREIGN KEY ("eventId") REFERENCES "events" ("id");
+    ADD FOREIGN KEY ("event_id") REFERENCES "events" ("id");

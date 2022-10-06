@@ -17,10 +17,10 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "eventId")
+    @JoinColumn(name = "event_id")
     private Event event;
     @ManyToOne
-    @JoinColumn(name = "authorId")
+    @JoinColumn(name = "author_id")
     private User author;
     @Column(name = "comment")
     private String comment;

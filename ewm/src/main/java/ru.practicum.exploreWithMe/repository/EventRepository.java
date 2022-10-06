@@ -17,6 +17,11 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     Event getByIdAndStateIs (Long id, StatusOfEvent state);
 
     Event getByIdAndStateNot(Long id, StatusOfEvent state);
+
+    List<Event> getAllByInitiatorId(Long initiatorId);
+    Event getByInitiatorId(Long initiatorId);
+
+    Event getByIdAndInitiatorId(Long eventId, Long initiatorId);
     //@Transactional
     Event getByIdAndStateIsAndEventDateIsAfter (Long eventId, StatusOfEvent status, LocalDateTime localDateTime);
     @Transactional

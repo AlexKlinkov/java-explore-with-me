@@ -26,9 +26,11 @@ public class NewEventDTOInput {
     @Positive
     @JsonProperty(value = "category")
     private Long categoryId; // id of category
+    @Positive
     @Value("0")
     private Long participantLimit; // max amount of persons who can take part in this event,
     // also ZERO means lack of restrictions on filling this event by people
+    @NotNull
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate; // time of happening of event

@@ -8,12 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import ru.practicum.exploreWithMe.dto.EventFullDtoOutput;
 import ru.practicum.exploreWithMe.dto.EventShortDtoOutput;
 import ru.practicum.exploreWithMe.dto.NewEventDTOInput;
+import ru.practicum.exploreWithMe.dto.ParticipationRequestDtoOutput;
 import ru.practicum.exploreWithMe.model.Event;
 import ru.practicum.exploreWithMe.service.EventService;
 import ru.practicum.exploreWithMe.service.EventServiceInBD;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -53,6 +55,58 @@ public class EventController {
         return eventsForReturn;
     }
 
+    @GetMapping("/users/{userId}/events")
+    public List<EventFullDtoOutput> getEventsPrivate(@PathVariable Long userId,
+                                                    @RequestParam(value = "from", required = false, defaultValue = "0")
+                                                    Long from,
+                                                     @RequestParam(value = "size", required = false, defaultValue = "10")
+                                                     Long size) {
+        return eventService.getEventsPrivate(userId, from, size);
+    }
+
+    @PatchMapping("/users/{userId}/events")
+    public EventFullDtoOutput updateEventPrivate(@PathVariable Long userId,
+                                                 @RequestBody NewEventDTOInput newEventDTOInput) {
+        return eventService.updateEventPrivate(userId, newEventDTOInput);
+    }
+
+    @PostMapping("/users/{userId}/events")
+    public EventFullDtoOutput createEventPrivate(@PathVariable Long userId,
+                                                 @RequestBody NewEventDTOInput newEventDTOInput) {
+        return eventService.createEventPrivate(userId, newEventDTOInput);
+    }
+
+    @GetMapping("/users/{userId}/events/{eventId}")
+    public EventFullDtoOutput getFullInfoAboutEventByUserWhoCreatedThisEventPrivate(@PathVariable Long userId,
+                                                                 @PathVariable Long eventId) {
+        return eventService.getFullInfoAboutEventByUserWhoCreatedThisEventPrivate(userId, eventId);
+    }
+
+    @PatchMapping("/users/{userId}/events/{eventId}")
+    public EventFullDtoOutput cancelEventPrivate(@PathVariable Long userId, @PathVariable Long eventId) {
+        return eventService.cancelEventPrivate(userId, eventId);
+    }
+
+    @GetMapping("/users/{userId}/events/{eventId}/requests")
+    public Set<ParticipationRequestDtoOutput> getParticipationInformationAboutUserPrivate(@PathVariable Long userId,
+                                                                                          @PathVariable Long eventId) {
+        return eventService.getParticipationInformationAboutUserPrivate(userId, eventId);
+    }
+
+    @PatchMapping("/users/{userId}/events/{eventId}/requests/{reqId}/confirm")
+    public ParticipationRequestDtoOutput ApproveParticipationRequestPrivate(@PathVariable Long userId,
+                                                                            @PathVariable Long eventId,
+                                                                            @PathVariable Long reqId) {
+        return eventService.ApproveParticipationRequestPrivate(userId, eventId, reqId);
+    }
+
+    @PatchMapping("/users/{userId}/events/{eventId}/requests/{reqId}/reject")
+    public ParticipationRequestDtoOutput refuseParticipationRequestPrivate(@PathVariable Long userId,
+                                                                            @PathVariable Long eventId,
+                                                                            @PathVariable Long reqId) {
+        return eventService.refuseParticipationRequestPrivate(userId, eventId, reqId);
+    }
+
     @GetMapping("/admin/events")
     public List<EventFullDtoOutput> getEventsAdmin (@RequestParam(name = "users", required = false) List<Long> users,
                                                     @RequestParam(name = "states", required = false)
@@ -73,7 +127,6 @@ public class EventController {
     @PutMapping("/admin/events/{eventId}")
     public EventFullDtoOutput editEventByAdmin (@PathVariable Long eventId,
                                                 @RequestBody NewEventDTOInput newEventDTOInput) {
-        System.out.println("here");
         return eventService.editEventByAdmin(eventId, newEventDTOInput);
     }
 
@@ -86,11 +139,5 @@ public class EventController {
     EventFullDtoOutput rejectPublishEventByAdmin (@PathVariable Long eventId) {
         System.out.println("here");
         return eventService.rejectPublishEventByAdmin(eventId);
-    }
-
-    @PostMapping("/users/{userId}/events")
-    public EventFullDtoOutput createEventPrivate(@PathVariable Long userId,
-                                                 @RequestBody NewEventDTOInput newEventDTOInput) {
-        return eventService.createEventPrivate(userId, newEventDTOInput);
     }
 }

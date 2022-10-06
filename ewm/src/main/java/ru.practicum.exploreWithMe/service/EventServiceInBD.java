@@ -8,20 +8,24 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import ru.practicum.exploreWithMe.auxiliaryObjects.Converter;
 import ru.practicum.exploreWithMe.auxiliaryObjects.StatusOfEvent;
+import ru.practicum.exploreWithMe.auxiliaryObjects.StatusOfParticipationRequest;
 import ru.practicum.exploreWithMe.dto.EventFullDtoOutput;
 import ru.practicum.exploreWithMe.dto.EventShortDtoOutput;
 import ru.practicum.exploreWithMe.dto.NewEventDTOInput;
 import ru.practicum.exploreWithMe.dto.ParticipationRequestDtoOutput;
 import ru.practicum.exploreWithMe.mapper.EventMapper;
+import ru.practicum.exploreWithMe.mapper.ParticipationRequestMapper;
 import ru.practicum.exploreWithMe.model.Event;
+import ru.practicum.exploreWithMe.model.ParticipationRequest;
 import ru.practicum.exploreWithMe.repository.CategoryRepository;
 import ru.practicum.exploreWithMe.repository.EventRepository;
+import ru.practicum.exploreWithMe.repository.ParticipationRequestRepository;
 import ru.practicum.exploreWithMe.repository.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -36,8 +40,13 @@ public class EventServiceInBD implements EventService {
     @Autowired
     private final CategoryRepository categoryRepository;
     @Autowired
+    private ParticipationRequestRepository participationRequestRepository;
+    @Autowired
     @Qualifier("EventMapperImplForBD")
     final EventMapper eventMapper;
+    @Autowired
+    @Qualifier("ParticipationRequestMapperImplForBD")
+    final ParticipationRequestMapper participationRequestMapper;
     @Autowired
     private Converter converter;
 
@@ -69,13 +78,13 @@ public class EventServiceInBD implements EventService {
                 .filter(p -> p.getPaid().equals(paid))
                 .collect(Collectors.toList());
         // 6. Следущая итерация, укарачиваем список с помощью параметра диапазона дат
-        if (rangeStart.length() > 0  && rangeEnd.length() > 0) {
+        if (rangeStart.length() > 0 && rangeEnd.length() > 0) {
             eventsForReturn = eventsForReturn.stream()
                     .filter(d -> d.getEventDate().isAfter(converter.ConverterStringToLocalDataTime(rangeStart)) &&
                             d.getEventDate().isBefore(converter.ConverterStringToLocalDataTime(rangeEnd)))
                     .collect(Collectors.toList());
         }
-        if (rangeStart.length() > 0  && rangeEnd.length() < 1) {
+        if (rangeStart.length() > 0 && rangeEnd.length() < 1) {
             eventsForReturn = eventsForReturn.stream()
                     .filter(d -> d.getEventDate().isAfter(converter.ConverterStringToLocalDataTime(rangeStart)))
                     .collect(Collectors.toList());
@@ -141,51 +150,134 @@ public class EventServiceInBD implements EventService {
     }
 
     @Override
-    public List<EventShortDtoOutput> getEventsPrivate(Long userId, Long from, Long size) {
-        return null;
+    public List<EventFullDtoOutput> getEventsPrivate(Long userId, Long from, Long size) {
+        log.debug("Get all events which belong initiator of these events by path : '/users/{userId}/events'");
+        return eventRepository.getAllByInitiatorId(userId).stream()
+                .map(eventMapper::eventFullDtoOutputFromEvent)
+                .skip(from)
+                .limit(size)
+                .collect(Collectors.toList());
     }
 
     @Override
     public EventFullDtoOutput updateEventPrivate(Long userId, NewEventDTOInput newEventDTOInput) {
-        return null;
+        log.debug("PATCH initiator update own event by path : '/users/{userId}/events'");
+        LocalDateTime now = LocalDateTime.now();
+        Event event = eventRepository.getByInitiatorId(userId);
+        if (event.getState().equals(StatusOfEvent.CANCELED) || event.getState().equals(StatusOfEvent.PENDING)) {
+            event.setState(StatusOfEvent.PENDING);
+            event.setAnnotation(newEventDTOInput.getAnnotation());
+            if (categoryRepository.existsById(newEventDTOInput.getCategoryId())) {
+                event.setCategory(categoryRepository.getReferenceById(newEventDTOInput.getCategoryId()));
+            }
+            event.setDescription(newEventDTOInput.getDescription());
+            if (newEventDTOInput.getEventDate().isAfter(now.plusHours(2L))) {
+                event.setEventDate(newEventDTOInput.getEventDate());
+            }
+            event.setPaid(newEventDTOInput.getPaid());
+            event.setParticipantLimit(newEventDTOInput.getParticipantLimit());
+            event.setTitle(newEventDTOInput.getTitle());
+        }
+        return eventMapper.eventFullDtoOutputFromEvent(eventRepository.save(event));
     }
 
     @Override
     public EventFullDtoOutput createEventPrivate(Long userId, NewEventDTOInput newEventDTOInput) {
         log.debug("Create event by path : '/users/{userId}/events'");
-        Event event = eventMapper.eventFromNewEventDTOInput(newEventDTOInput);
-        event.setCreatedOn(LocalDateTime.now());
-        event.setInitiator(userRepository.getReferenceById(userId));
-        event.setConfirmedRequests(0L);
-        event.setState(StatusOfEvent.PENDING);
-        event.setViews(0L);
-        Event almostFullEvent = eventRepository.save(event);
-        return eventMapper.eventFullDtoOutputFromEvent(almostFullEvent);
+        if (newEventDTOInput.getEventDate().isAfter(LocalDateTime.now().plusHours(2L))) {
+            Event event = eventMapper.eventFromNewEventDTOInput(newEventDTOInput);
+            event.setCreatedOn(LocalDateTime.now());
+            event.setInitiator(userRepository.getReferenceById(userId));
+            event.setConfirmedRequests(0L);
+            event.setState(StatusOfEvent.PENDING);
+            event.setViews(0L);
+            Event almostFullEvent = eventRepository.save(event);
+            return eventMapper.eventFullDtoOutputFromEvent(almostFullEvent);
+        }
+        return null;
     }
 
     @Override
     public EventFullDtoOutput getFullInfoAboutEventByUserWhoCreatedThisEventPrivate(Long userId, Long eventId) {
-        return null;
+        log.debug("Get all information about event by initiator follow path : '/users/{userId}/events/{eventId}'");
+        return eventMapper.eventFullDtoOutputFromEvent(eventRepository.getByIdAndInitiatorId(eventId, userId));
     }
 
     @Override
-    public EventFullDtoOutput cancelEventPrivate(Long userId, NewEventDTOInput newEventDTOInput) {
-        return null;
+    public EventFullDtoOutput cancelEventPrivate(Long userId, Long eventId) {
+        log.debug("Cancel event by initiator follow path : '/users/{userId}/events/{eventId}'");
+        Event event = eventRepository.getByIdAndInitiatorId(eventId, userId);
+        if (event.getState().equals(StatusOfEvent.PENDING)) {
+            event.setState(StatusOfEvent.CANCELED);
+        }
+        return eventMapper.eventFullDtoOutputFromEvent(eventRepository.save(event));
     }
 
     @Override
-    public ParticipationRequestDtoOutput getParticipationInformationAboutUserPrivate(Long userId, Long eventId) {
-        return null;
+    public Set<ParticipationRequestDtoOutput> getParticipationInformationAboutUserPrivate(Long userId, Long eventId) {
+        log.debug("Initiator of event obtains information about participation request at this event by path :" +
+                " '/users/{userId}/events/{eventId}/requests'");
+        // 1. Получаем сначала событие текущего пользователя (инициатора события)
+        Event event = eventRepository.getByIdAndInitiatorId(eventId, userId);
+        return participationRequestRepository.getAllByEventId(event.getId()).stream()
+                .map(participationRequestMapper ::RequestDtoOutputFromParticipationRequest)
+                .collect(Collectors.toSet());
     }
 
     @Override
     public ParticipationRequestDtoOutput ApproveParticipationRequestPrivate(Long userId, Long eventId, Long reqId) {
-        return null;
+        log.debug("Initiator of event approves participation request at this event by path :" +
+                " '/users/{userId}/events/{eventId}/requests/{reqId}/confirm'");
+        // 1. Получаем сначала событие текущего пользователя (инициатора события)
+        Event event = eventRepository.getByIdAndInitiatorId(eventId, userId);
+        // 2. Получаем заявку на участие в мероприятии
+        ParticipationRequest participationRequest = participationRequestRepository.getReferenceById(reqId);
+        if (event.getParticipantLimit() != 0 || event.getRequestModeration().equals(true)) {
+            // 3. Это событие требуют подтверждение, если не достиг предел на учатие по количеству человек в мероприятии
+            if (event.getParticipantLimit() != event.getConfirmedRequests()) {
+                // 4. Обновляем статус запроса
+                participationRequest.setStatus(StatusOfParticipationRequest.CONFIRMED);
+                participationRequestRepository.save(participationRequest);
+                // 5. У события увеличиваем счетчик подтвержденных заявок
+                event.setConfirmedRequests(event.getConfirmedRequests() + 1L);
+                eventRepository.save(event);
+            }
+            // 6. Проверяем достиг ли лимит по количеству участников в мероприятии, если да, то
+            // оставшиеся заявки на участие отклоняем
+            if (event.getParticipantLimit() == event.getConfirmedRequests()) {
+                // 6.1 Получаем все заявки на события, которые имеют статус PENDING
+                List<ParticipationRequest> participationRequestList =
+                        participationRequestRepository.getAllByEventIdAndStatusIs(
+                                eventId, StatusOfParticipationRequest.PENDING);
+                // 6.2 Меняем статус всех этих заявок на CANCELED
+                for (ParticipationRequest request : participationRequestList) {
+                    request.setStatus(StatusOfParticipationRequest.REJECTED);
+                    participationRequestRepository.save(request);
+                }
+            }
+        }
+        return participationRequestMapper.RequestDtoOutputFromParticipationRequest(
+                participationRequestRepository.getReferenceById(reqId));
     }
 
     @Override
     public ParticipationRequestDtoOutput refuseParticipationRequestPrivate(Long userId, Long eventId, Long reqId) {
-        return null;
+        log.debug("Initiator of event refuse participation request at this event by path :" +
+                " '/users/{userId}/events/{eventId}/requests/{reqId}/reject'");
+        // 1. Получаем сначала событие текущего пользователя (инициатора события)
+        Event event = eventRepository.getByIdAndInitiatorId(eventId, userId);
+        // 2. Получаем заявку на участие в мероприятии
+        ParticipationRequest participationRequest = participationRequestRepository.getReferenceById(reqId);
+        // 3. Проверяем предварительно статус заявки
+        if (participationRequest.getStatus().equals(StatusOfParticipationRequest.CONFIRMED)) {
+            event.setConfirmedRequests(event.getConfirmedRequests() - 1L);
+            eventRepository.save(event);
+        }
+        // 4. Отклоняем заявку на участие в мероприятии
+        participationRequest.setStatus(StatusOfParticipationRequest.REJECTED);
+        participationRequestRepository.save(participationRequest);
+        return participationRequestMapper.RequestDtoOutputFromParticipationRequest(
+                participationRequestRepository.getReferenceById(reqId));
     }
 
     @Override
@@ -225,7 +317,7 @@ public class EventServiceInBD implements EventService {
                             d.getEventDate().isBefore(converter.ConverterStringToLocalDataTime(rangeEnd)))
                     .collect(Collectors.toList());
         }
-        if (rangeStart.length() > 0  && rangeEnd.length() < 1) {
+        if (rangeStart.length() > 0 && rangeEnd.length() < 1) {
             eventsForReturn = eventsForReturn.stream()
                     .filter(d -> d.getEventDate().isAfter(converter.ConverterStringToLocalDataTime(rangeStart)))
                     .collect(Collectors.toList());
@@ -239,7 +331,7 @@ public class EventServiceInBD implements EventService {
         // 6. Окончательно сокращаем возвращаемый список используя параметры
         // 'from' и 'size' (по умелчанию равны 0 и 10 соотвественно)
         return eventsForReturn.stream()
-                .map(eventMapper ::eventFullDtoOutputFromEvent)
+                .map(eventMapper::eventFullDtoOutputFromEvent)
                 .skip(from)
                 .limit(size)
                 .collect(Collectors.toList());
@@ -249,34 +341,20 @@ public class EventServiceInBD implements EventService {
     public EventFullDtoOutput editEventByAdmin(Long eventId, NewEventDTOInput newEventDTOInput) {
         log.debug("Edit event by Admin and eventId follow this path : '/admin/events/{eventId}'");
         Event eventForEdit = eventRepository.getReferenceById(eventId);
-        if (newEventDTOInput.getAnnotation() != null && newEventDTOInput.getAnnotation().length() > 0) {
-            eventForEdit.setAnnotation(newEventDTOInput.getAnnotation());
-        }
-        if (newEventDTOInput.getCategoryId() > 0 && newEventDTOInput.getCategoryId() != null) {
+        eventForEdit.setAnnotation(newEventDTOInput.getAnnotation());
+        if (categoryRepository.existsById(newEventDTOInput.getCategoryId())) {
             eventForEdit.setCategory(categoryRepository.getReferenceById(newEventDTOInput.getCategoryId()));
         }
-        if (newEventDTOInput.getDescription() != null) {
-            eventForEdit.setDescription(newEventDTOInput.getDescription());
-        }
-        if (newEventDTOInput.getEventDate() != null) {
-            eventForEdit.setEventDate(newEventDTOInput.getEventDate());
-        }
+        eventForEdit.setDescription(newEventDTOInput.getDescription());
+        eventForEdit.setEventDate(newEventDTOInput.getEventDate());
         if (newEventDTOInput.getLocation() != null) {
             eventForEdit.setLat(newEventDTOInput.getLocation().getLat());
             eventForEdit.setLon(newEventDTOInput.getLocation().getLon());
         }
-        if (newEventDTOInput.getPaid() != null) {
-            eventForEdit.setPaid(newEventDTOInput.getPaid());
-        }
-        if (newEventDTOInput.getParticipantLimit() > -1) {
-            eventForEdit.setParticipantLimit(newEventDTOInput.getParticipantLimit());
-        }
-        if (newEventDTOInput.getRequestModeration() != null) {
-            eventForEdit.setRequestModeration(newEventDTOInput.getRequestModeration());
-        }
-        if (newEventDTOInput.getTitle() != null && newEventDTOInput.getTitle().length() > 0) {
-            eventForEdit.setTitle(newEventDTOInput.getTitle());
-        }
+        eventForEdit.setPaid(newEventDTOInput.getPaid());
+        eventForEdit.setParticipantLimit(newEventDTOInput.getParticipantLimit());
+        eventForEdit.setRequestModeration(newEventDTOInput.getRequestModeration());
+        eventForEdit.setTitle(newEventDTOInput.getTitle());
         return eventMapper.eventFullDtoOutputFromEvent(eventRepository.save(eventForEdit));
     }
 
