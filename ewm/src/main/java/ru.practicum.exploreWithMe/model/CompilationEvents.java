@@ -5,9 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.exploreWithMe.auxiliaryObjects.client.KeyForCompilationEvents;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
+import javax.persistence.*;
 
 @Data
 @AllArgsConstructor
@@ -16,7 +14,9 @@ import javax.persistence.IdClass;
 @IdClass(KeyForCompilationEvents.class)
 public class CompilationEvents {
     @Id
+    @JoinColumn(name = "compilation_id")
     private Long compilationId;
     @Id
+    @JoinColumn(name = "event_id")
     private Long eventId;
 }

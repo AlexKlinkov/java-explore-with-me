@@ -1,7 +1,6 @@
 package ru.practicum.exploreWithMe.service;
 
 import ru.practicum.exploreWithMe.dto.CompilationDtoOutput;
-import ru.practicum.exploreWithMe.dto.CompilationDtoOutputForAdmin;
 import ru.practicum.exploreWithMe.dto.NewCompilationDTOInput;
 
 import java.util.List;
@@ -15,7 +14,7 @@ public interface CompilationService {
     // GET /compilations/{compId}
     CompilationDtoOutput getCompilationByIdPublic(Long compId);
     // POST /admin/compilations
-    CompilationDtoOutputForAdmin createCompilationsByAdmin(NewCompilationDTOInput newCompilationDTOInput);
+    CompilationDtoOutput createCompilationsByAdmin(NewCompilationDTOInput newCompilationDTOInput);
     // DELETE /admin/compilations/{compId}
     void deleteCompilationByIdAdmin(Long compId);
     // DELETE /admin/compilations/{compId}/events/{eventId}
@@ -25,5 +24,5 @@ public interface CompilationService {
     // DELETE /admin/compilations/{compId}/pin
     void unPinCompilationFromMainPageAdmin(Long compId);
     // PATCH /admin/compilations/{compId}/pin
-    CompilationDtoOutput PinCompilationOnMainPageAdmin(Long compId);
+    void PinCompilationOnMainPageAdmin(Long compId);
 }

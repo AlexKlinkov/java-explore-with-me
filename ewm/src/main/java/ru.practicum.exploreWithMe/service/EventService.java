@@ -41,7 +41,7 @@ public interface EventService {
     // PATCH /users/{userId}/events/{eventId} (PRIVATE)
     EventFullDtoOutput cancelEventPrivate(Long userId, Long eventId);
     // GET /users/{userId}/events/{eventId}/requests (PRIVATE)
-    Set<ParticipationRequestDtoOutput> getParticipationInformationAboutUserPrivate(Long userId, Long eventId);
+    List<ParticipationRequestDtoOutput> getParticipationInformationAboutUserPrivate(Long userId, Long eventId);
     // if ParticipationLimit is 0 or pre moderation authorization is turn off,
     // that means approving of request is not necessary.
     // if ParticipationLimit was achieved, request cannot be approved and leftover of requests should be canceled

@@ -43,7 +43,6 @@ CREATE TABLE "events"
     "description"        varchar,
     "category_id"        bigint,
     "initiator_id"       bigint,
-    "compilation_id"     bigint,
     "confirmed_requests" bigint,
     "participant_limit"  bigint,
     "lat"                double precision,
@@ -84,9 +83,6 @@ ALTER TABLE "events"
 
 ALTER TABLE "events"
     ADD FOREIGN KEY ("initiator_id") REFERENCES "users" ("id");
-
-ALTER TABLE "events"
-    ADD FOREIGN KEY ("compilation_id") REFERENCES "compilations" ("id");
 
 ALTER TABLE "comments"
     ADD FOREIGN KEY ("event_id") REFERENCES "events" ("id");

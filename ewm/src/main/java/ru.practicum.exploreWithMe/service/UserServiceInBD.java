@@ -48,9 +48,11 @@ public class UserServiceInBD implements UserService {
     @Override
     public UserDtoOutputForAdmin createUser(UserDTOInput userDTOInput) { // POST admin/users
         log.debug("Save user by path '/admin/users'");
-        User user =  userRepository.save(userMapper.userFromDTOInputUser(userDTOInput));
-        log.debug("Try return UserDtoOutputForAdmin after save this in BD");
-        return userMapper.userDtoOutputForAdminFromUser(user);
+        User user = new User();
+        user.setName(userDTOInput.getName());
+        user.setEmail(userDTOInput.getEmail());
+        User userForReturn = userRepository.save(user);
+        return userMapper.userDtoOutputForAdminFromUser(userForReturn);
     }
 
     @Override

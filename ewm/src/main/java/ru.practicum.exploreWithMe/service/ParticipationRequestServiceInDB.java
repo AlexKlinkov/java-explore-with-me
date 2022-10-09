@@ -45,19 +45,17 @@ public class ParticipationRequestServiceInDB implements ParticipationRequestServ
     @Override
     public ParticipationRequestDtoOutput createRequestPrivate(Long userId, Long eventId) {
         log.debug("Create participationRequest for Requester by path : '/users/{userId}/requests'");
+        LocalDateTime now = LocalDateTime.now();
         // 1. Получаем событие
         Event event = eventRepository.getReferenceById(eventId);
         if (event.getRequestModeration().equals(true) || event.getParticipantLimit() > 0) {
-            ParticipationRequest participationRequest = participationRequestRepository.save(
-                    new ParticipationRequest(
-                            0L,
-                            eventRepository.getReferenceById(eventId),
-                            LocalDateTime.now(),
-                            userRepository.getReferenceById(userId),
-                            StatusOfParticipationRequest.PENDING
-                    )
-            );
-            return participationRequestMapper.RequestDtoOutputFromParticipationRequest(participationRequest);
+            ParticipationRequest participationRequest = new ParticipationRequest();
+            participationRequest.setEvent(eventRepository.getReferenceById(eventId));
+            participationRequest.setRequestor(userRepository.getReferenceById(userId));
+            participationRequest.setStatus(StatusOfParticipationRequest.PENDING);
+            participationRequest.setCreated(now);
+            ParticipationRequest participationRequestForReturn = participationRequestRepository.save(participationRequest);
+            return participationRequestMapper.RequestDtoOutputFromParticipationRequest(participationRequestForReturn);
         }
         return null;
     }
@@ -66,7 +64,7 @@ public class ParticipationRequestServiceInDB implements ParticipationRequestServ
     public ParticipationRequestDtoOutput cancelOwnRequestPrivate(Long userId, Long requestId) {
         log.debug("Requester refuse from participationRequest by path : '/users/{userId}/requests/{requestId}/cancel'");
         participationRequestRepository.cancelOwnRequest(
-                userId, requestId, StatusOfParticipationRequest.REJECTED
+                userId, requestId, StatusOfParticipationRequest.CANCELED
         );
         return participationRequestMapper.RequestDtoOutputFromParticipationRequest(
                 participationRequestRepository.getByIdAndRequestorId(requestId, userId)

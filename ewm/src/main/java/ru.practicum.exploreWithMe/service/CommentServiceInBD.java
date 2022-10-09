@@ -36,13 +36,14 @@ public class CommentServiceInBD implements CommentService {
     @Override
     public CommentDtoOutput addCommentToEvent(Long userId, Long eventId, NewCommentDTOInput newCommentDTOInput) {
         log.debug("Add comment to event by path : '/events/{eventId}/comments'");
+        LocalDateTime now = LocalDateTime.now();
         // 1. Проверяем, что комментарий хочет оставить не инициатор события
         if (eventRepository.getReferenceById(eventId).getInitiator().getId() != userId) {
             Comment comment = new Comment();
             comment.setComment(newCommentDTOInput.getCommentText());
             comment.setEvent(eventRepository.getReferenceById(eventId));
             comment.setAuthor(userRepository.getReferenceById(userId));
-            comment.setCreated(LocalDateTime.now());
+            comment.setCreated(now);
             return commentMapper.commentDtoOutputFromComment(commentRepository.save(comment));
         }
         return null;

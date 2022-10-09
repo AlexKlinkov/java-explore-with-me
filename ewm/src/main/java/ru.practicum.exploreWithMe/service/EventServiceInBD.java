@@ -25,7 +25,6 @@ import ru.practicum.exploreWithMe.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -69,9 +68,12 @@ public class EventServiceInBD implements EventService {
         }
         // 4. Все события подходящие под список categoryId
         if (categoryIds.size() > 0) {
-            eventsForReturn = eventsForReturn.stream()
+            List<Event> onlyByWithIds = eventsForReturn.stream()
                     .filter(i -> categoryIds.contains(i.getId()))
                     .collect(Collectors.toList());
+            if (!onlyByWithIds.isEmpty()) {
+                eventsForReturn = onlyByWithIds;
+            }
         }
         // 5. Следущая итерация, укарачиваем список с помощью параметра paid (по умолчанию = false)
         eventsForReturn = eventsForReturn.stream()
@@ -133,9 +135,6 @@ public class EventServiceInBD implements EventService {
         return eventsForReturn.stream()
                 .map(eventMapper::eventShortDtoOutputFromEvent)
                 .collect(Collectors.toList());
-
-        // 10. Последняя итерация, укарачиваем список учитывая параметр
-        // from и size (по умолчанию = 0 и 10 соответственно)
     }
 
     @Override
@@ -184,17 +183,18 @@ public class EventServiceInBD implements EventService {
     @Override
     public EventFullDtoOutput createEventPrivate(Long userId, NewEventDTOInput newEventDTOInput) {
         log.debug("Create event by path : '/users/{userId}/events'");
-        if (newEventDTOInput.getEventDate().isAfter(LocalDateTime.now().plusHours(2L))) {
+        LocalDateTime now = LocalDateTime.now();
+         if (newEventDTOInput.getEventDate().isAfter(now.plusHours(2L))) {
             Event event = eventMapper.eventFromNewEventDTOInput(newEventDTOInput);
-            event.setCreatedOn(LocalDateTime.now());
+            event.setCreatedOn(now);
             event.setInitiator(userRepository.getReferenceById(userId));
             event.setConfirmedRequests(0L);
             event.setState(StatusOfEvent.PENDING);
             event.setViews(0L);
             Event almostFullEvent = eventRepository.save(event);
             return eventMapper.eventFullDtoOutputFromEvent(almostFullEvent);
-        }
-        return null;
+         }
+         return null;
     }
 
     @Override
@@ -214,14 +214,13 @@ public class EventServiceInBD implements EventService {
     }
 
     @Override
-    public Set<ParticipationRequestDtoOutput> getParticipationInformationAboutUserPrivate(Long userId, Long eventId) {
+    public List<ParticipationRequestDtoOutput> getParticipationInformationAboutUserPrivate(Long userId, Long eventId) {
         log.debug("Initiator of event obtains information about participation request at this event by path :" +
                 " '/users/{userId}/events/{eventId}/requests'");
-        // 1. Получаем сначала событие текущего пользователя (инициатора события)
-        Event event = eventRepository.getByIdAndInitiatorId(eventId, userId);
-        return participationRequestRepository.getAllByEventId(event.getId()).stream()
-                .map(participationRequestMapper ::RequestDtoOutputFromParticipationRequest)
-                .collect(Collectors.toSet());
+        return participationRequestRepository.findAll().stream()
+                .filter(i -> i.getRequestor().getId() != userId && i.getEvent().getId() == eventId)
+                .map(participationRequestMapper::RequestDtoOutputFromParticipationRequest)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -361,13 +360,15 @@ public class EventServiceInBD implements EventService {
     @Override
     public EventFullDtoOutput publishEventByAdmin(Long eventId) {
         log.debug("Publish event by path : '/admin/events/{eventId}/publish'");
-        LocalDateTime nowPlusOneHours = LocalDateTime.now().plusHours(1L);
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime nowPlusOneHours = now.plusHours(1L);
         if (eventRepository.getByIdAndStateIsAndEventDateIsAfter(eventId, StatusOfEvent.PENDING,
                 nowPlusOneHours).getId() != null) {
             Event updatedEvent = eventRepository.getReferenceById(eventId);
-            updatedEvent.setPublishedOn(LocalDateTime.now());
+            updatedEvent.setPublishedOn(now);
             updatedEvent.setState(StatusOfEvent.PUBLISHED);
-            return eventMapper.eventFullDtoOutputFromEvent(eventRepository.save(updatedEvent));
+            Event eventForReturn = eventRepository.save(updatedEvent);
+            return eventMapper.eventFullDtoOutputFromEvent(eventForReturn);
         }
         return null;
     }

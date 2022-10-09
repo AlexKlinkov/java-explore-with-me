@@ -88,7 +88,7 @@ public class EventController {
     }
 
     @GetMapping("/users/{userId}/events/{eventId}/requests")
-    public Set<ParticipationRequestDtoOutput> getParticipationInformationAboutUserPrivate(@PathVariable Long userId,
+    public List<ParticipationRequestDtoOutput> getParticipationInformationAboutUserPrivate(@PathVariable Long userId,
                                                                                           @PathVariable Long eventId) {
         return eventService.getParticipationInformationAboutUserPrivate(userId, eventId);
     }
@@ -137,7 +137,6 @@ public class EventController {
 
     @PatchMapping("/admin/events/{eventId}/reject")
     EventFullDtoOutput rejectPublishEventByAdmin (@PathVariable Long eventId) {
-        System.out.println("here");
         return eventService.rejectPublishEventByAdmin(eventId);
     }
 }

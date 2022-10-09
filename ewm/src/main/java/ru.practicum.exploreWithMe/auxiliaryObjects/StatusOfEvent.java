@@ -5,10 +5,4 @@ public enum StatusOfEvent {
     CANCELED // This status happen in two case, 1. Initiator rejected it while event has status WAITING,
     ;
     // 2. Moderator decided that this event cannot be PUBLISHED
-
-
-    @Override
-    public String toString() {
-        return super.toString();
-    }
 }

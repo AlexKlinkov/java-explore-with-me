@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Component;
 import ru.practicum.exploreWithMe.auxiliaryObjects.Location;
 import ru.practicum.exploreWithMe.dto.EventFullDtoOutput;
@@ -43,14 +42,12 @@ public class EventMapperImplForBD implements EventMapper{
         event.setParticipantLimit(newEventDTOInput.getParticipantLimit());
         event.setLat(newEventDTOInput.getLocation().getLat());
         event.setLon(newEventDTOInput.getLocation().getLon());
-        //event.setLocation(new Point(newEventDTOInput.getLocation().getLat(), newEventDTOInput.getLocation().getLon()));
         event.setRequestModeration(newEventDTOInput.getRequestModeration());
         if (newEventDTOInput.getCategoryId() != null) {
             event.setCategory(categoryRepository.getReferenceById(newEventDTOInput.getCategoryId()));
         } else {
             event.setCategory(null);
         }
-        event.setCompilation(null);
         event.setConfirmedRequests(null);
         event.setCreatedOn(null);
         event.setInitiator(null);
@@ -93,7 +90,6 @@ public class EventMapperImplForBD implements EventMapper{
         eventFullDtoOutput.setDescription(event.getDescription());
         eventFullDtoOutput.setPaid(event.getPaid());
         eventFullDtoOutput.setParticipantLimit(event.getParticipantLimit());
-        // eventFullDtoOutput.setLocation(new Location(event.getLocation().getX(), event.getLocation().getY()));
         eventFullDtoOutput.setLocation(new Location(event.getLat(), event.getLon()));
         eventFullDtoOutput.setRequestModeration(event.getRequestModeration());
         eventFullDtoOutput.setCategory(categoryMapper.categoryDtoOutputFromCategory(event.getCategory()));

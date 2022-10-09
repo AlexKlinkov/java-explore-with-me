@@ -30,9 +30,6 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "initiator_id") // this reference on table with users information
     private User initiator;
-    @ManyToOne
-    @JoinColumn(name = "compilation_id")
-    private Compilation compilation;
     @Column(name = "confirmed_requests")
     private Long confirmedRequests; // amount of persons who confirmed entrance
     @Column(name = "participant_limit")
