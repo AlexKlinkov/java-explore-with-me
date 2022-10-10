@@ -10,7 +10,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <name>ewn</name>
+    <name>ewm-service</name>
 
     <artifactId>exploreWithMeMainService</artifactId>
     <version>1</version>

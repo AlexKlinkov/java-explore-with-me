@@ -1,7 +1,7 @@
 version: '3.8'
 services:
-  stat:
-    build: ./stat
+  stats-server:
+    build: ./stats-server
     ports:
       - "9090:9090"
     depends_on:
@@ -20,8 +20,8 @@ services:
       - POSTGRES_DB=stat
       - POSTGRES_USER=Admin
       - POSTGRES_PASSWORD=123
-  ewm:
-    build: ./ewm
+  ewm-service:
+    build: ./ewm-service
     depends_on:
       - ewm-db
       - stat-db
