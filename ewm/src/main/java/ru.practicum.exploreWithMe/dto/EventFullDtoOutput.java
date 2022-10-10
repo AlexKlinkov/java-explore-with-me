@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.geo.Point;
 import org.springframework.format.annotation.DateTimeFormat;
 import ru.practicum.exploreWithMe.auxiliaryObjects.Location;
 import ru.practicum.exploreWithMe.auxiliaryObjects.StatusOfEvent;

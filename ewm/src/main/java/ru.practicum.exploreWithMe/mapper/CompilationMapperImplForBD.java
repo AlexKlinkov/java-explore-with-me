@@ -8,10 +8,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.practicum.exploreWithMe.dto.CompilationDtoOutput;
 import ru.practicum.exploreWithMe.dto.EventFullDtoOutput;
-import ru.practicum.exploreWithMe.dto.NewCompilationDTOInput;
 import ru.practicum.exploreWithMe.model.Compilation;
 import ru.practicum.exploreWithMe.model.CompilationEvents;
-import ru.practicum.exploreWithMe.model.Event;
 import ru.practicum.exploreWithMe.repository.CompilationEventsRepository;
 import ru.practicum.exploreWithMe.repository.EventRepository;
 

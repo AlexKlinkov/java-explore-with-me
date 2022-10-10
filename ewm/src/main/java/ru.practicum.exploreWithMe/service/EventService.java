@@ -6,7 +6,6 @@ import ru.practicum.exploreWithMe.dto.NewEventDTOInput;
 import ru.practicum.exploreWithMe.dto.ParticipationRequestDtoOutput;
 
 import java.util.List;
-import java.util.Set;
 
 public interface EventService {
     // This method return only PUBLISHED events according chosen params:

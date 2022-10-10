@@ -2,8 +2,6 @@ package ru.practicum.exploreWithMe.service;
 
 import ru.practicum.exploreWithMe.dto.UserDTOInput;
 import ru.practicum.exploreWithMe.dto.UserDtoOutputForAdmin;
-import ru.practicum.exploreWithMe.dto.UserShortDtoOutput;
-import ru.practicum.exploreWithMe.model.User;
 
 import java.util.List;
 

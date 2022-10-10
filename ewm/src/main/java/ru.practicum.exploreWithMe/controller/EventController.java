@@ -9,13 +9,9 @@ import ru.practicum.exploreWithMe.dto.EventFullDtoOutput;
 import ru.practicum.exploreWithMe.dto.EventShortDtoOutput;
 import ru.practicum.exploreWithMe.dto.NewEventDTOInput;
 import ru.practicum.exploreWithMe.dto.ParticipationRequestDtoOutput;
-import ru.practicum.exploreWithMe.model.Event;
 import ru.practicum.exploreWithMe.service.EventService;
-import ru.practicum.exploreWithMe.service.EventServiceInBD;
 
-import javax.validation.Valid;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
