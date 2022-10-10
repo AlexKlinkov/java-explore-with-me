@@ -13,13 +13,5 @@ public interface ParticipationRequestRepository extends JpaRepository<Participat
     List<ParticipationRequest> getAllByRequestorId(Long requestorId);
     ParticipationRequest getByIdAndRequestorId(Long requestId, Long userId);
     List<ParticipationRequest> getAllByEventIdAndStatusIs(Long eventId, StatusOfParticipationRequest status);
-    @Transactional
-    @Modifying
-    @Query("update ParticipationRequest p set p.status = :status where p.requestor.id = :requestorId " +
-            "and p.id = :requestId")
-    void cancelOwnRequest (@Param("requestorId") Long requestorId,
-                                 @Param("requestId") Long requestId,
-                                 @Param("status") StatusOfParticipationRequest status);
-
-     List<ParticipationRequest> getAllByEventId(Long eventId);
+    ParticipationRequest findByRequestorIdAndEventId (Long requestorId, Long eventId);
 }

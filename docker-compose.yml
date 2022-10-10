@@ -1,11 +1,11 @@
-version: '3.1'
+version: '3.8'
 services:
-  stat-server:
+  stat:
     build: ./stat
     ports:
       - "9090:9090"
     depends_on:
-      - stats-db
+      - stat-db
     environment:
       - SERVER_PORT=9090
       - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/stat
@@ -20,7 +20,7 @@ services:
       - POSTGRES_DB=stat
       - POSTGRES_USER=Admin
       - POSTGRES_PASSWORD=123
-  ewm-service:
+  ewm:
     build: ./ewm
     depends_on:
       - ewm-db

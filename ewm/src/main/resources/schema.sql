@@ -16,7 +16,7 @@ CREATE TABLE "users"
 CREATE TABLE "categories"
 (
     "id"   bigint generated always as identity not null primary key,
-    "name" varchar
+    "name" varchar unique
 );
 
 CREATE TABLE "compilations"
