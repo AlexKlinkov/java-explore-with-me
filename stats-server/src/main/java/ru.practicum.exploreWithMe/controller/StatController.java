@@ -20,8 +20,8 @@ public class StatController {
     private final StatService statService;
 
     @PostMapping("/hit")
-    public EndpointHitDtoOutput saveStat(@RequestBody @Valid EndpointHitDTOInput endpointHitDTOInput){
-        return statService.saveStat(endpointHitDTOInput);
+    public void saveStat(@RequestBody @Valid EndpointHitDTOInput endpointHitDTOInput){
+        statService.saveStat(endpointHitDTOInput);
     }
 
     @GetMapping("/stats")

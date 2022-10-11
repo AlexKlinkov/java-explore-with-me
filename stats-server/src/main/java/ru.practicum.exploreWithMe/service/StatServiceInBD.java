@@ -34,14 +34,14 @@ public class StatServiceInBD implements StatService {
     private final Converter converter;
 
     @Override
-    public EndpointHitDtoOutput saveStat(EndpointHitDTOInput endpointHitDTOInput) {
+    public void saveStat(EndpointHitDTOInput endpointHitDTOInput) {
         log.debug("Save stat information by path : '/hit'");
         EndpointHit endpointHit = new EndpointHit();
         endpointHit.setApp(endpointHitDTOInput.getApp());
         endpointHit.setAttributes(new Attributes(endpointHitDTOInput.getUri(), endpointHitDTOInput.getIp()));
         endpointHit.setTimestamp(converter.ConverterStringToLocalDataTime(endpointHitDTOInput.getTimestamp()));
         EndpointHit endpointHitForReturn = endpointHitRepository.save(endpointHit);
-        return endpointHitMapper.endPointHitDtoOutputFromEndpointHit(endpointHitForReturn);
+        endpointHitMapper.endPointHitDtoOutputFromEndpointHit(endpointHitForReturn);
 
     }
 

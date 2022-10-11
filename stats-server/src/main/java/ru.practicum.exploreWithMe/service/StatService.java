@@ -7,6 +7,6 @@ import ru.practicum.exploreWithMe.dto.StatOutput;
 import java.util.List;
 
 public interface StatService {
-    EndpointHitDtoOutput saveStat (EndpointHitDTOInput endpointHitDTOInput);
+    void saveStat (EndpointHitDTOInput endpointHitDTOInput);
     List<StatOutput> getStats (String start, String End, List<String> uris, Boolean unique);
 }

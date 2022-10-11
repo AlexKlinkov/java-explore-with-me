@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.exploreWithMe.auxiliaryObjects.StatInfoInput;
-import ru.practicum.exploreWithMe.auxiliaryObjects.client.EventClient;
+import ru.practicum.exploreWithMe.auxiliaryObjects.EventClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.practicum.exploreWithMe.dto.EventFullDtoOutput;
 import ru.practicum.exploreWithMe.dto.EventShortDtoOutput;
@@ -46,7 +46,7 @@ public class EventController {
         // here request will be redirected to stat service
         // go through controller, at that controller will be return value is void, in order to
         // don't show stat information to user
-        eventClient.post("/hit", new StatInfoInput("ewn-service", request.getRequestURI(),
+        eventClient.create(new StatInfoInput("ewn-service", request.getRequestURI(),
                 request.getRemoteAddr(), LocalDateTime.now().toString()));
         return eventsForReturn;
     }

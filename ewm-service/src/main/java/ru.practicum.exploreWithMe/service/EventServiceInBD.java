@@ -27,6 +27,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -125,7 +126,6 @@ public class EventServiceInBD implements EventService {
                         .filter(d -> d.getConfirmedRequests() < d.getParticipantLimit())
                         .collect(Collectors.toList());
             }
-            System.out.println(eventsForReturn);
             // 8. Следущая итерация, укарачиваем список учитывая параметр сортировки (по умолчанию = EVENT_DATE)
             // Сначала события, старт которых ближе всего к текущей дате
             if (sortEventDateOrViews.equals("EVENT_DATE")) {
@@ -300,7 +300,7 @@ public class EventServiceInBD implements EventService {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("User with id=" + userId + " was not found.");
         }
-        if (eventRepository.getReferenceById(eventId).getInitiator().getId() != userId) {
+        if (!Objects.equals(eventRepository.getReferenceById(eventId).getInitiator().getId(), userId)) {
             throw new ConflictException("Event with id=" + eventId + " cannot be canceled, coz user with id="
                     + userId + " didn't create it");
         }
@@ -372,7 +372,8 @@ public class EventServiceInBD implements EventService {
             // 2. Получаем заявку на участие в мероприятии
             ParticipationRequest participationRequest = participationRequestRepository.getReferenceById(reqId);
             if (event.getParticipantLimit() != 0 || event.getRequestModeration().equals(true)) {
-                // 3. Это событие требуют подтверждение, если не достиг предел на учатие по количеству человек в мероприятии
+                // 3. Это событие требуют подтверждение, если не достиг предел на учатие по количеству человек
+                // в мероприятии
                 if (event.getParticipantLimit() != event.getConfirmedRequests()) {
                     // 4. Обновляем статус запроса
                     participationRequest.setStatus(StatusOfParticipationRequest.CONFIRMED);
@@ -381,8 +382,8 @@ public class EventServiceInBD implements EventService {
                     event.setConfirmedRequests(event.getConfirmedRequests() + 1L);
                     eventRepository.save(event);
                 }
-                // 6. Проверяем достиг ли лимит по количеству участников в мероприятии, если да, то
-                // оставшиеся заявки на участие отклоняем
+                // 6. Проверяем достиг ли лимит по количеству участников в мероприятии, если да, то оставшиеся
+                // заявки на участие отклоняем
                 if (event.getParticipantLimit() == event.getConfirmedRequests()) {
                     // 6.1 Получаем все заявки на события, которые имеют статус PENDING
                     List<ParticipationRequest> participationRequestList =

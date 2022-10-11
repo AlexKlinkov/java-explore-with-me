@@ -2,6 +2,10 @@ version: '3.8'
 services:
   stats-server:
     build: ./stats-server
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 3s
     ports:
       - "9090:9090"
     depends_on:
@@ -17,7 +21,7 @@ services:
     ports:
       - "5555:5432"
     environment:
-      - POSTGRES_DB=stat
+      - POSTGRES_DB=ewn
       - POSTGRES_USER=Admin
       - POSTGRES_PASSWORD=123
   ewm-service:
