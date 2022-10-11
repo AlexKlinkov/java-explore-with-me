@@ -3,6 +3,7 @@ package ru.practicum.exploreWithMe.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.exploreWithMe.auxiliaryObjects.StatInfoInput;
 import ru.practicum.exploreWithMe.auxiliaryObjects.client.EventClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.practicum.exploreWithMe.dto.EventFullDtoOutput;
@@ -11,6 +12,8 @@ import ru.practicum.exploreWithMe.dto.NewEventDTOInput;
 import ru.practicum.exploreWithMe.dto.ParticipationRequestDtoOutput;
 import ru.practicum.exploreWithMe.service.EventService;
 
+import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -36,12 +39,15 @@ public class EventController {
                                               @RequestParam(value = "from", required = false, defaultValue = "0")
                                                   Long from,
                                               @RequestParam(value = "size", required = false, defaultValue = "10")
-                                                  Long size) {
+                                                  Long size, HttpServletRequest request) {
         List<EventShortDtoOutput> eventsForReturn = eventService.getEventsPublic(text, categories, paid, rangeStart,
                 rangeEnd, onlyAvailable, sortEventDateOrViews, from, size);
-        // 1. before return request from main service (EWN), we claim to stat service
-        //eventClient.post("/hit", eventsForReturn); // here request will be redirected to stat service go through
-        // controller, at that controller will be return value is void, in order to don't show stat information to user
+        // 1. before return request from main service (EWN), we invoke to stat service
+        // here request will be redirected to stat service
+        // go through controller, at that controller will be return value is void, in order to
+        // don't show stat information to user
+        eventClient.post("/hit", new StatInfoInput("ewn-service", request.getRequestURI(),
+                request.getRemoteAddr(), LocalDateTime.now().toString()));
         return eventsForReturn;
     }
 

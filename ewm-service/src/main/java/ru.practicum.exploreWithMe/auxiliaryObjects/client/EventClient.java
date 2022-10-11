@@ -8,11 +8,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-import ru.practicum.exploreWithMe.dto.EventShortDtoOutput;
-
-import java.util.List;
-
-
+import ru.practicum.exploreWithMe.auxiliaryObjects.StatInfoInput;
 @Service
 public class EventClient {
     // This client sent request
@@ -25,13 +21,7 @@ public class EventClient {
                 .requestFactory(HttpComponentsClientHttpRequestFactory::new)
                 .build();
     }
-
-    public ResponseEntity<Object> post(String path, List<EventShortDtoOutput> body) {
-        return post("", null);
+    public ResponseEntity<Object> post(String path, StatInfoInput body) {
+        return post("", body);
     }
-
-    public ResponseEntity<Object> post(String path, long userId, EventShortDtoOutput body) {
-        return post("", userId, body);
-    }
-
 }

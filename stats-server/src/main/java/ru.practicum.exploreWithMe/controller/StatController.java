@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.exploreWithMe.dto.EndpointHitDTOInput;
 import ru.practicum.exploreWithMe.dto.EndpointHitDtoOutput;
+import ru.practicum.exploreWithMe.dto.StatOutput;
 import ru.practicum.exploreWithMe.service.StatService;
 
 import javax.validation.Valid;
@@ -24,10 +25,10 @@ public class StatController {
     }
 
     @GetMapping("/stats")
-    public List<EndpointHitDtoOutput> getStats (@RequestParam(name = "start", required = false) String start,
-                                                @RequestParam(name = "end", required = false) String end,
-                                                @RequestParam(name = "uris", required = false) List<String> uris,
-                                                @RequestParam(name = "unique", required = false, defaultValue = "false")
+    public List<StatOutput> getStats (@RequestParam(name = "start", required = false) String start,
+                                      @RequestParam(name = "end", required = false) String end,
+                                      @RequestParam(name = "uris", required = false) List<String> uris,
+                                      @RequestParam(name = "unique", required = false, defaultValue = "false")
                                                     Boolean unique) {
         return statService.getStats(start, end, uris, unique);
     }

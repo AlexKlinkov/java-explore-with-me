@@ -1,8 +1,16 @@
 package ru.practicum.exploreWithMe.mapper;
 
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import ru.practicum.exploreWithMe.dto.EndpointHitDtoOutput;
 import ru.practicum.exploreWithMe.model.EndpointHit;
 
+@Data
+@Slf4j
+@Component("EndpointHitMapperForBD")
+@RequiredArgsConstructor
 public class EndpointHitMapperForBD implements EndpointHitMapper{
 
     @Override
