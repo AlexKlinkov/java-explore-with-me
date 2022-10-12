@@ -1,29 +1,25 @@
-version: '3.8'
+version: '3.1'
 services:
   stats-server:
     build: ./stats-server
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 3s
     ports:
       - "9090:9090"
     depends_on:
       - stat-db
     environment:
-      - SERVER_PORT=9090
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/stat
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stat-db:5432/stat
       - SPRING_DATASOURCE_USER=Admin
       - SPRING_DATASOURCE_PASSWORD=123
 
   stat-db:
     image: postgres:14-alpine
     ports:
-      - "5555:5432"
+      - "5444:5432"
     environment:
-      - POSTGRES_DB=ewn
+      - POSTGRES_DB=stat
       - POSTGRES_USER=Admin
       - POSTGRES_PASSWORD=123
+
   ewm-service:
     build: ./ewm-service
     depends_on:
@@ -32,7 +28,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - exploreWithMeStatService_url=http://localhost:9090
+      - STAT-SERVER_URL=http://localhost:9090
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
       - SPRING_DATASOURCE_USER=Admin
       - SPRING_DATASOURCE_PASSWORD=123
@@ -40,7 +36,7 @@ services:
   ewm-db:
     image: postgres:14-alpine
     ports:
-      - "5666:5432"
+      - "5333:5432"
     environment:
       - POSTGRES_DB=ewm
       - POSTGRES_USER=Admin
