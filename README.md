@@ -1,5 +1,5 @@
 Дипломный проект : java-explore-with-me
-Ссылка на pull request: [java-explore-with-me]https://github.com/AlexKlinkov/java-explore-with-me/pull/1
+Ссылка на pull request: [java-explore-with-me](https://github.com/AlexKlinkov/java-explore-with-me/pull/1)
 
 API для Swagger :
 
