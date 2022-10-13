@@ -11,7 +11,7 @@
     </parent>
 
     <name>stats-server</name>
-    <artifactId>exploreWithMeStatService</artifactId>
+    <artifactId>explore_with_me_stat_service</artifactId>
     <version>1</version>
 
     <properties>

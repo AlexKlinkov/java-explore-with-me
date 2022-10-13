@@ -11,7 +11,7 @@
     </parent>
 
     <name>ewm-service</name>
-    <artifactId>exploreWithMeEwnService</artifactId>
+    <artifactId>explore_with_me_ewn_service</artifactId>
     <version>1</version>
 
     <properties>
@@ -102,11 +102,6 @@
             <version>3.2.13</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-        </dependency>
-
     </dependencies>
     <build>
         <plugins>

@@ -16,7 +16,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <name>Explore With Me</name>
+    <name>explore_with_me</name>
 
     <groupId>ru.practicum</groupId>
     <artifactId>explore-with-me</artifactId>
@@ -132,7 +132,7 @@
                                             <limit>
                                                 <counter>CLASS</counter>
                                                 <value>MISSEDCOUNT</value>
-                                                <maximum>14</maximum>
+                                                <maximum>15</maximum>
                                             </limit>
                                         </limits>
                                     </rule>

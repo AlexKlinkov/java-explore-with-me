@@ -9,21 +9,21 @@ drop table if exists "compilation_events" cascade;
 CREATE TABLE "users"
 (
     "id"    bigint generated always as identity not null primary key,
-    "name"  varchar,
-    "email" varchar
+    "name"  varchar(100),
+    "email" varchar(100)
 );
 
 CREATE TABLE "categories"
 (
     "id"   bigint generated always as identity not null primary key,
-    "name" varchar unique
+    "name" varchar(100) unique
 );
 
 CREATE TABLE "compilations"
 (
     "id"     bigint generated always as identity not null primary key,
     "pinned" boolean,
-    "title"  varchar
+    "title"  varchar(120)
 );
 
 CREATE TABLE "participation_requests"
@@ -32,15 +32,15 @@ CREATE TABLE "participation_requests"
     "event_id"     bigint,
     "created"      timestamp with time zone,
     "requestor_id" bigint,
-    "status"       varchar
+    "status"       varchar(50)
 );
 
 CREATE TABLE "events"
 (
     "id"                 bigint generated always as identity not null primary key,
-    "annotation"         varchar,
-    "title"              varchar,
-    "description"        varchar,
+    "annotation"         varchar(2000),
+    "title"              varchar(120),
+    "description"        varchar(7000),
     "category_id"        bigint,
     "initiator_id"       bigint,
     "confirmed_requests" bigint,
@@ -50,7 +50,7 @@ CREATE TABLE "events"
     "created_on"         timestamp with time zone,
     "published_on"       timestamp with time zone,
     "event_date"         timestamp with time zone,
-    "state"              varchar,
+    "state"              varchar(50),
     "paid"               boolean,
     "views"              bigint,
     "request_moderation" boolean
@@ -61,7 +61,7 @@ CREATE TABLE "comments"
     "id"        bigint generated always as identity not null primary key,
     "event_id"  bigint,
     "author_id" bigint,
-    "comment"   varchar,
+    "comment"   varchar(1000),
     "created"   timestamp with time zone
 );
 
