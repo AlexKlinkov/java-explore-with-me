@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import ru.practicum.exploreWithMe.auxiliary_objects.CompilationCheckValidationMethods;
 import ru.practicum.exploreWithMe.dto.UserDTOInput;
 import ru.practicum.exploreWithMe.dto.UserDtoOutputForAdmin;
 import ru.practicum.exploreWithMe.exeption.*;
@@ -33,7 +34,7 @@ public class UserServiceInBD implements UserService {
     @Override
     public List<UserDtoOutputForAdmin> getUsers(List<Long> ids, Long from, Long size) {
         log.debug("Get users by path '/admin/users' with param 'ids'");
-        if (size < 1 || from < 0) {
+        if (CompilationCheckValidationMethods.checkParamsOfPageFromAndSize(from, size)) {
             throw new NotCorrectArgumentsInMethodException("Size cannot be less than 1, " +
                     "also from cannot be less then 0");
         }
@@ -61,8 +62,7 @@ public class UserServiceInBD implements UserService {
             User user = new User();
             user.setName(userDTOInput.getName());
             user.setEmail(userDTOInput.getEmail());
-            User userForReturn = userRepository.save(user);
-            return userMapper.userDtoOutputForAdminFromUser(userForReturn);
+            return userMapper.userDtoOutputForAdminFromUser(userRepository.save(user));
         } catch (ConflictException exception) {
             throw new ConflictException("User with this email " + userDTOInput.getEmail()  + " already exist");
         }
@@ -70,7 +70,7 @@ public class UserServiceInBD implements UserService {
 
     @Override
     public void deleteUserById(Long userId) {
-        if (userId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(userId)) {
             throw new ValidationException("Id of user cannot be less than 0");
         }
         if (!userRepository.existsById(userId)) {

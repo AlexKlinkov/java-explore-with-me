@@ -8,7 +8,6 @@ import ru.practicum.exploreWithMe.model.User;
 
 @Mapper
 public interface UserMapper {
-    User userFromDTOInputUser (UserDTOInput userDTOInput);
     UserShortDtoOutput userShortDtoOutputFromUser (User user);
     UserDtoOutputForAdmin userDtoOutputForAdminFromUser(User user);
 }

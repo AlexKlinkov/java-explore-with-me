@@ -1,4 +1,4 @@
-package ru.practicum.exploreWithMe.auxiliaryObjects;
+package ru.practicum.exploreWithMe.auxiliary_objects;
 
 public enum StatusOfParticipationRequest {
     PENDING,

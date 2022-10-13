@@ -9,10 +9,8 @@ import org.springframework.stereotype.Service;
 import ru.practicum.exploreWithMe.auxiliaryClasses.Attributes;
 import ru.practicum.exploreWithMe.auxiliaryClasses.Converter;
 import ru.practicum.exploreWithMe.dto.EndpointHitDTOInput;
-import ru.practicum.exploreWithMe.dto.EndpointHitDtoOutput;
 import ru.practicum.exploreWithMe.dto.StatOutput;
 import ru.practicum.exploreWithMe.mapper.EndpointHitMapper;
-import ru.practicum.exploreWithMe.mapper.EndpointHitMapperForBD;
 import ru.practicum.exploreWithMe.model.EndpointHit;
 import ru.practicum.exploreWithMe.repository.EndpointHitRepository;
 
@@ -40,8 +38,7 @@ public class StatServiceInBD implements StatService {
         endpointHit.setApp(endpointHitDTOInput.getApp());
         endpointHit.setAttributes(new Attributes(endpointHitDTOInput.getUri(), endpointHitDTOInput.getIp()));
         endpointHit.setTimestamp(converter.ConverterStringToLocalDataTime(endpointHitDTOInput.getTimestamp()));
-        EndpointHit endpointHitForReturn = endpointHitRepository.save(endpointHit);
-        endpointHitMapper.endPointHitDtoOutputFromEndpointHit(endpointHitForReturn);
+        endpointHitMapper.endPointHitDtoOutputFromEndpointHit(endpointHitRepository.save(endpointHit));
 
     }
 

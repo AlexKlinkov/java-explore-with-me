@@ -3,7 +3,6 @@ package ru.practicum.exploreWithMe.mapper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.practicum.exploreWithMe.dto.UserDTOInput;
 import ru.practicum.exploreWithMe.dto.UserDtoOutputForAdmin;
 import ru.practicum.exploreWithMe.dto.UserShortDtoOutput;
 import ru.practicum.exploreWithMe.model.User;
@@ -12,20 +11,6 @@ import ru.practicum.exploreWithMe.model.User;
 @Slf4j
 @Component("UserMapperImplForBD")
 public class UserMapperImplForBD implements UserMapper {
-
-    @Override
-    public User userFromDTOInputUser(UserDTOInput userDTOInput) {
-        if ( userDTOInput == null ) {
-            return null;
-        }
-
-        User user = new User();
-        user.setName(userDTOInput.getName());
-        user.setEmail(userDTOInput.getEmail());
-
-        return user;
-    }
-
     @Override
     public UserShortDtoOutput userShortDtoOutputFromUser(User user) {
         if ( user == null ) {

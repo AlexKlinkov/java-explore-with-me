@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
-import ru.practicum.exploreWithMe.auxiliaryObjects.Location;
+import ru.practicum.exploreWithMe.auxiliary_objects.Location;
 
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;

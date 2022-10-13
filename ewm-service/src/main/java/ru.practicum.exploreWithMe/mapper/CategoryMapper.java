@@ -7,6 +7,5 @@ import ru.practicum.exploreWithMe.model.Category;
 
 @Mapper
 public interface CategoryMapper {
-    Category categoryFromNewCategoryDTOInput(NewCategoryDTOInput newCategoryDTOInput);
     CategoryDtoOutput categoryDtoOutputFromCategory(Category category);
 }

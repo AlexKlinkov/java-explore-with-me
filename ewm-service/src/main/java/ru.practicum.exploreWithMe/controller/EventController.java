@@ -2,13 +2,11 @@ package ru.practicum.exploreWithMe.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import ru.practicum.exploreWithMe.auxiliaryObjects.StatInfoInput;
-/*import ru.practicum.exploreWithMe.auxiliaryObjects.EventClient;*/
+import ru.practicum.exploreWithMe.auxiliary_objects.StatInfoInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.practicum.exploreWithMe.dto.EventFullDtoOutput;
 import ru.practicum.exploreWithMe.dto.EventShortDtoOutput;
@@ -17,15 +15,12 @@ import ru.practicum.exploreWithMe.dto.ParticipationRequestDtoOutput;
 import ru.practicum.exploreWithMe.service.EventService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 public class EventController {
-/*    @Autowired
-    private final EventClient eventClient; // client which will be called for collect stat information*/
     @Autowired
     @Qualifier("EventServiceInBD")
     private final EventService eventService;
@@ -52,8 +47,6 @@ public class EventController {
         // here request will be redirected to stat service
         // go through controller, at that controller will be return value is void, in order to
         // don't show stat information to user
-/*        eventClient.create(String.valueOf(new StatInfoInput("ewn-service", request.getRequestURI(),
-                request.getRemoteAddr(), LocalDateTime.now().toString())));*/
         WebClient.create()
                 .post()
                 .uri("http://localhost:9090" + "/hit")

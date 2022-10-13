@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import ru.practicum.exploreWithMe.auxiliary_objects.CompilationCheckValidationMethods;
 import ru.practicum.exploreWithMe.dto.CategoryDtoOutput;
 import ru.practicum.exploreWithMe.dto.NewCategoryDTOInput;
 import ru.practicum.exploreWithMe.exeption.*;
@@ -29,9 +30,9 @@ public class CategoryServiceInBD implements CategoryService {
     private CategoryMapper categoryMapper;
 
     @Override
-    public List<CategoryDtoOutput> getCategories(Long from, Long size) { // GET /categories
+    public List<CategoryDtoOutput> getCategories(Long from, Long size) {
         log.debug("Get categories by path '/categories'");
-        if (size < 1 || from < 0) {
+        if (CompilationCheckValidationMethods.checkParamsOfPageFromAndSize(from, size)) {
             throw new NotCorrectArgumentsInMethodException("Size cannot be less than 1, " +
                     "also from cannot be less then 0");
         }
@@ -49,7 +50,7 @@ public class CategoryServiceInBD implements CategoryService {
     @Override
     public CategoryDtoOutput getCategoryById(Long categoryId) {
         log.debug("Get category by path '/categories/{catId}'");
-        if (categoryId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(categoryId)) {
             throw new ValidationException("Id of category cannot be less than 0");
         }
         if (!categoryRepository.existsById(categoryId)) {
@@ -69,7 +70,7 @@ public class CategoryServiceInBD implements CategoryService {
                 newCategoryDTOInput.getName().isEmpty()) {
             throw new NotCorrectArgumentsInMethodException("Category cannot be with id=null or with name=null/empty");
         }
-        if (newCategoryDTOInput.getId() < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(newCategoryDTOInput.getId())) {
             throw new ValidationException("Id of category cannot be less than 0");
         }
         if (!categoryRepository.existsById(newCategoryDTOInput.getId())) {
@@ -104,7 +105,7 @@ public class CategoryServiceInBD implements CategoryService {
     @Override
     public void deleteCategoryById(Long categoryId) {
         log.debug("Delete category by path 'admin/categories'");
-        if (categoryId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(categoryId)) {
             throw new ValidationException("Id of category cannot be less than 0");
         }
         if (!categoryRepository.existsById(categoryId)) {

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.exploreWithMe.auxiliaryObjects.StatusOfParticipationRequest;
+import ru.practicum.exploreWithMe.auxiliary_objects.StatusOfParticipationRequest;
 
 import java.time.LocalDateTime;
 

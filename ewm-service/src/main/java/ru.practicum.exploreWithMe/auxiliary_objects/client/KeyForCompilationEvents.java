@@ -1,4 +1,4 @@
-package ru.practicum.exploreWithMe.auxiliaryObjects.client;
+package ru.practicum.exploreWithMe.auxiliary_objects.client;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

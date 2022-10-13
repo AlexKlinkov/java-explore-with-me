@@ -1,7 +1,7 @@
 package ru.practicum.exploreWithMe.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.practicum.exploreWithMe.auxiliaryObjects.StatusOfEvent;
+import ru.practicum.exploreWithMe.auxiliary_objects.StatusOfEvent;
 import ru.practicum.exploreWithMe.model.Event;
 
 import java.time.LocalDateTime;

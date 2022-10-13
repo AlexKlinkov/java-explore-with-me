@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.exploreWithMe.dto.EndpointHitDTOInput;
-import ru.practicum.exploreWithMe.dto.EndpointHitDtoOutput;
 import ru.practicum.exploreWithMe.dto.StatOutput;
 import ru.practicum.exploreWithMe.service.StatService;
 

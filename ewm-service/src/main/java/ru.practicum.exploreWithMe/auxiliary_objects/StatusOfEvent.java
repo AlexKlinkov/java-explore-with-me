@@ -1,4 +1,4 @@
-package ru.practicum.exploreWithMe.auxiliaryObjects;
+package ru.practicum.exploreWithMe.auxiliary_objects;
 public enum StatusOfEvent {
     PUBLISHED, // This status starts after positive Moderator's check
     PENDING, // This status became immediately after initiator created event

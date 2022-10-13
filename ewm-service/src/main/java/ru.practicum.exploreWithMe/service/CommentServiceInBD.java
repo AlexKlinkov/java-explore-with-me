@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import ru.practicum.exploreWithMe.auxiliary_objects.CompilationCheckValidationMethods;
 import ru.practicum.exploreWithMe.dto.CommentDTOInputForEdit;
 import ru.practicum.exploreWithMe.dto.CommentDtoOutput;
 import ru.practicum.exploreWithMe.dto.NewCommentDTOInput;
@@ -39,10 +40,10 @@ public class CommentServiceInBD implements CommentService {
     public CommentDtoOutput addCommentToEvent(Long userId, Long eventId, NewCommentDTOInput newCommentDTOInput) {
         log.debug("Add comment to event by path : '/events/{eventId}/comments'");
         LocalDateTime now = LocalDateTime.now();
-        if (userId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(userId)) {
             throw new ValidationException("Id of user cannot be less than 0");
         }
-        if (eventId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(eventId)) {
             throw new ValidationException("Id of event cannot be less than 0");
         }
         if (!userRepository.existsById(userId)) {
@@ -72,10 +73,10 @@ public class CommentServiceInBD implements CommentService {
     @Override
     public void deleteComment(Long userId, Long comId) {
         log.debug("Delete comment from event by path : '/events/comments/{comId}'");
-        if (userId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(userId)) {
             throw new ValidationException("Id of user cannot be less than 0");
         }
-        if (comId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(comId)) {
             throw new ValidationException("Id of comment cannot be less than 0");
         }
         if (!userRepository.existsById(userId)) {
@@ -102,7 +103,8 @@ public class CommentServiceInBD implements CommentService {
                                           CommentDTOInputForEdit commentDTOInputForEdit) {
         log.debug("User with id=" + userId + " wants to update comment with id=" + comId
                 + " by path : '/events/comments/{comId}'");
-        if (userId < 0 || comId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(userId) ||
+                CompilationCheckValidationMethods.checkParamOfId(comId)) {
             throw new ValidationException("Id of user and id of comment cannot be less than 0");
         }
         if (!userRepository.existsById(userId)) {
@@ -130,7 +132,7 @@ public class CommentServiceInBD implements CommentService {
     @Override
     public List<CommentDtoOutput> getCommentsAboutEventById(Long eventId) {
         log.debug("Get list with comments to event with id=" + eventId + " by path : '/events/{eventId}/comments'");
-        if (eventId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(eventId)) {
             throw new ValidationException("Id of event cannot be less than 0");
         }
         if (!userRepository.existsById(eventId)) {

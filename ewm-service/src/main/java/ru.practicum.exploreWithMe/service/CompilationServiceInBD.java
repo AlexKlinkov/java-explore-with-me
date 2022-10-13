@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import ru.practicum.exploreWithMe.auxiliary_objects.CompilationCheckValidationMethods;
 import ru.practicum.exploreWithMe.dto.CompilationDtoOutput;
 import ru.practicum.exploreWithMe.dto.NewCompilationDTOInput;
 import ru.practicum.exploreWithMe.exeption.*;
@@ -37,7 +38,7 @@ public class CompilationServiceInBD implements CompilationService {
     @Override
     public List<CompilationDtoOutput> getCompilationsPublic(Boolean pinned, Long from, Long size) {
         log.debug("Get compilation (PUBLIC) by path : '/compilations'");
-        if (size < 1 || from < 0) {
+        if (CompilationCheckValidationMethods.checkParamsOfPageFromAndSize(from, size)) {
             throw new NotCorrectArgumentsInMethodException("Size cannot be less than 1, " +
                     "also from cannot be less then 0");
         }
@@ -58,7 +59,7 @@ public class CompilationServiceInBD implements CompilationService {
     @Override
     public CompilationDtoOutput getCompilationByIdPublic(Long compId) {
         log.debug("Get compilation by id (PUBLIC) follow path : '/compilations/compId'");
-        if (compId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(compId)) {
             throw new ValidationException("Id of compilation cannot be less than 0");
         }
         if (!compilationRepository.existsById(compId)) {
@@ -90,9 +91,7 @@ public class CompilationServiceInBD implements CompilationService {
                 compilationEvents.setEventId(id);
                 compilationEventsRepository.save(compilationEvents);
             }
-            CompilationDtoOutput compilationDtoOutput =
-                    compilationMapper.compilationDtoOutputFromCompilation(compilation);
-            return compilationDtoOutput;
+            return compilationMapper.compilationDtoOutputFromCompilation(compilation);
         } catch (ServerError exception) {
             throw new ServerError("Error occurred");
         }
@@ -101,7 +100,7 @@ public class CompilationServiceInBD implements CompilationService {
     @Override
     public void deleteCompilationByIdAdmin(Long compId) {
         log.debug("Delete compilation by id (ADMIN) follow path : '/admin/compilations/{compId}'");
-        if (compId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(compId)) {
             throw new ValidationException("Id of compilation cannot be less than 0");
         }
         if (!compilationRepository.existsById(compId)) {
@@ -121,13 +120,13 @@ public class CompilationServiceInBD implements CompilationService {
     public void deleteEventFromCompilationByIdAdmin(Long compId, Long eventId) {
         log.debug("Delete event from compilation by compilationId (ADMIN) " +
                 "follow path : '/admin/compilations/{compId}/events/{eventId}'");
-        if (eventId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(eventId)) {
             throw new ValidationException("Id of event cannot be less than 0");
         }
         if (!eventRepository.existsById(compId)) {
             throw new NotFoundException("Event with id=" + eventId + " was not found.");
         }
-        if (compId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(compId)) {
             throw new ValidationException("Id of compilation cannot be less than 0");
         }
         if (!compilationRepository.existsById(compId)) {
@@ -150,13 +149,13 @@ public class CompilationServiceInBD implements CompilationService {
     public CompilationDtoOutput addEventToCompilationAdmin(Long compId, Long eventId) {
         log.debug("Add event to compilation (ADMIN) " +
                 "follow path : '/admin/compilations/{compId}/events/{eventId}'");
-        if (compId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(compId)) {
             throw new ValidationException("Id of compilation cannot be less than 0");
         }
         if (!compilationRepository.existsById(compId)) {
             throw new NotFoundException("Compilation with id=" + compId + " was not found.");
         }
-        if (eventId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(eventId)) {
             throw new ValidationException("Id of event cannot be less than 0");
         }
         if (!eventRepository.existsById(compId)) {
@@ -190,7 +189,7 @@ public class CompilationServiceInBD implements CompilationService {
     public void unPinCompilationFromMainPageAdmin(Long compId) {
         log.debug("Unpin compilation from main page " +
                 "follow path : '/admin/compilations/{compId}/pin'");
-        if (compId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(compId)) {
             throw new ValidationException("Id of compilation cannot be less than 0");
         }
         if (!compilationRepository.existsById(compId)) {
@@ -206,10 +205,10 @@ public class CompilationServiceInBD implements CompilationService {
     }
 
     @Override
-    public void PinCompilationOnMainPageAdmin(Long compId) {
+    public void pinCompilationOnMainPageAdmin(Long compId) {
         log.debug("Fix compilation on main page " +
                 "follow path : '/admin/compilations/{compId}/pin'");
-        if (compId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(compId)) {
             throw new ValidationException("Id of compilation cannot be less than 0");
         }
         if (!compilationRepository.existsById(compId)) {

@@ -12,16 +12,6 @@ import ru.practicum.exploreWithMe.model.Category;
 @Component("CategoryMapperImplForBD")
 public class CategoryMapperImplForBD implements CategoryMapper {
     @Override
-    public Category categoryFromNewCategoryDTOInput(NewCategoryDTOInput newCategoryDTOInput) {
-        if (newCategoryDTOInput == null) {
-            return null;
-        }
-        Category category = new Category();
-        category.setName(newCategoryDTOInput.getName());
-        return category;
-    }
-
-    @Override
     public CategoryDtoOutput categoryDtoOutputFromCategory(Category category) {
         if (category == null) {
             return null;

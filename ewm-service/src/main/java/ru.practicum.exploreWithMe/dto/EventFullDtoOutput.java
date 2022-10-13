@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import ru.practicum.exploreWithMe.auxiliaryObjects.Location;
-import ru.practicum.exploreWithMe.auxiliaryObjects.StatusOfEvent;
+import ru.practicum.exploreWithMe.auxiliary_objects.Location;
+import ru.practicum.exploreWithMe.auxiliary_objects.StatusOfEvent;
 
 import java.time.LocalDateTime;
 

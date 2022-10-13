@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import ru.practicum.exploreWithMe.auxiliaryObjects.StatusOfParticipationRequest;
+import ru.practicum.exploreWithMe.auxiliary_objects.StatusOfParticipationRequest;
 import ru.practicum.exploreWithMe.controller.ParticipationRequestController;
 import ru.practicum.exploreWithMe.dto.ParticipationRequestDtoOutput;
 import ru.practicum.exploreWithMe.model.Event;

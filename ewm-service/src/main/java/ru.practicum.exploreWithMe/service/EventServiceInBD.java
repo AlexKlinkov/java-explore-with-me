@@ -6,9 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import ru.practicum.exploreWithMe.auxiliaryObjects.Converter;
-import ru.practicum.exploreWithMe.auxiliaryObjects.StatusOfEvent;
-import ru.practicum.exploreWithMe.auxiliaryObjects.StatusOfParticipationRequest;
+import ru.practicum.exploreWithMe.auxiliary_objects.CompilationCheckValidationMethods;
+import ru.practicum.exploreWithMe.auxiliary_objects.Converter;
+import ru.practicum.exploreWithMe.auxiliary_objects.StatusOfEvent;
+import ru.practicum.exploreWithMe.auxiliary_objects.StatusOfParticipationRequest;
 import ru.practicum.exploreWithMe.dto.EventFullDtoOutput;
 import ru.practicum.exploreWithMe.dto.EventShortDtoOutput;
 import ru.practicum.exploreWithMe.dto.NewEventDTOInput;
@@ -57,7 +58,7 @@ public class EventServiceInBD implements EventService {
                                                      String rangeStart, String rangeEnd, Boolean onlyAvailable,
                                                      String sortEventDateOrViews, Long from, Long size) {
         log.debug("Get list with Published events (PUBLIC) by path : '/events'");
-        if (size < 1 || from < 0) {
+        if (CompilationCheckValidationMethods.checkParamsOfPageFromAndSize(from, size)) {
             throw new NotCorrectArgumentsInMethodException("Size cannot be less than 1, also " +
                     "from cannot be less then 0");
         }
@@ -161,7 +162,7 @@ public class EventServiceInBD implements EventService {
     @Override
     public EventFullDtoOutput getEventByIdPublic(Long eventId) {
         log.debug("Get event by ID using path : '/events/{id}'");
-        if (eventId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(eventId)) {
             throw new ValidationException("Id of event cannot be less than 0");
         } else if (!eventRepository.existsById(eventId)) {
             throw new NotFoundException("Event with id=" + eventId + " was not found.");
@@ -181,7 +182,7 @@ public class EventServiceInBD implements EventService {
     @Override
     public List<EventFullDtoOutput> getEventsPrivate(Long userId, Long from, Long size) {
         log.debug("Get all events which belong initiator of these events by path : '/users/{userId}/events'");
-        if (size < 1 || from < 0) {
+        if (CompilationCheckValidationMethods.checkParamsOfPageFromAndSize(from, size)) {
             throw new NotCorrectArgumentsInMethodException("Size cannot be less than 1, " +
                     "also from cannot be less then 0");
         }
@@ -199,7 +200,7 @@ public class EventServiceInBD implements EventService {
     @Override
     public EventFullDtoOutput updateEventPrivate(Long userId, NewEventDTOInput newEventDTOInput) {
         log.debug("PATCH initiator update own event by path : '/users/{userId}/events'");
-        if (userId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(userId)) {
             throw new ValidationException("Id of user cannot be less than 0");
         }
         if (!userRepository.existsById(userId)) {
@@ -234,7 +235,7 @@ public class EventServiceInBD implements EventService {
     @Override
     public EventFullDtoOutput createEventPrivate(Long userId, NewEventDTOInput newEventDTOInput) {
         log.debug("Create event by path : '/users/{userId}/events'");
-        if (userId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(userId)) {
             throw new ValidationException("Id of user cannot be less than 0");
         }
         if (!userRepository.existsById(userId)) {
@@ -249,8 +250,7 @@ public class EventServiceInBD implements EventService {
                 event.setConfirmedRequests(0L);
                 event.setState(StatusOfEvent.PENDING);
                 event.setViews(0L);
-                Event almostFullEvent = eventRepository.save(event);
-                return eventMapper.eventFullDtoOutputFromEvent(almostFullEvent);
+                return eventMapper.eventFullDtoOutputFromEvent(eventRepository.save(event));
             } else {
                 throw new ConflictException("New event with data start=" + newEventDTOInput.getEventDate() +
                         " cannot be created, coz data start has to be minimum for 2 hours from now");
@@ -263,12 +263,12 @@ public class EventServiceInBD implements EventService {
     @Override
     public EventFullDtoOutput getFullInfoAboutEventByUserWhoCreatedThisEventPrivate(Long userId, Long eventId) {
         log.debug("Get all information about event by initiator follow path : '/users/{userId}/events/{eventId}'");
-        if (eventId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(eventId)) {
             throw new ValidationException("Id of event cannot be less than 0");
         } else if (!eventRepository.existsById(eventId)) {
             throw new NotFoundException("Event with id=" + eventId + " was not found.");
         }
-        if (userId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(userId)) {
             throw new ValidationException("Id of user cannot be less than 0");
         }
         if (!userRepository.existsById(userId)) {
@@ -288,10 +288,10 @@ public class EventServiceInBD implements EventService {
     @Override
     public EventFullDtoOutput cancelEventPrivate(Long userId, Long eventId) {
         log.debug("Cancel event by initiator follow path : '/users/{userId}/events/{eventId}'");
-        if (userId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(userId)) {
             throw new ValidationException("Id of user cannot be less than 0");
         }
-        if (eventId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(eventId)) {
             throw new ValidationException("Id of event cannot be less than 0");
         }
         if (!eventRepository.existsById(eventId)) {
@@ -322,10 +322,10 @@ public class EventServiceInBD implements EventService {
     public List<ParticipationRequestDtoOutput> getParticipationInformationAboutUserPrivate(Long userId, Long eventId) {
         log.debug("Initiator of event obtains information about participation request at this event by path :" +
                 " '/users/{userId}/events/{eventId}/requests'");
-        if (eventId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(eventId)) {
             throw new ValidationException("Id of event cannot be less than 0");
         }
-        if (userId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(userId)) {
             throw new ValidationException("Id of user cannot be less than 0");
         }
         if (!userRepository.existsById(userId)) {
@@ -348,19 +348,19 @@ public class EventServiceInBD implements EventService {
     public ParticipationRequestDtoOutput ApproveParticipationRequestPrivate(Long userId, Long eventId, Long reqId) {
         log.debug("Initiator of event approves participation request at this event by path :" +
                 " '/users/{userId}/events/{eventId}/requests/{reqId}/confirm'");
-        if (eventId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(eventId)) {
             throw new ValidationException("Id of event cannot be less than 0");
         }
         if (!eventRepository.existsById(eventId)) {
             throw new NotFoundException("Event with id=" + eventId + " was not found.");
         }
-        if (reqId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(reqId)) {
             throw new ValidationException("Id of participationRequest cannot be less than 0");
         }
         if (!participationRequestRepository.existsById(reqId)) {
             throw new NotFoundException("ParticipationRequest with id=" + reqId + " was not found.");
         }
-        if (userId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(userId)) {
             throw new ValidationException("Id of user cannot be less than 0");
         }
         if (!userRepository.existsById(userId)) {
@@ -407,19 +407,19 @@ public class EventServiceInBD implements EventService {
     public ParticipationRequestDtoOutput refuseParticipationRequestPrivate(Long userId, Long eventId, Long reqId) {
         log.debug("Initiator of event refuse participation request at this event by path :" +
                 " '/users/{userId}/events/{eventId}/requests/{reqId}/reject'");
-        if (eventId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(eventId)) {
             throw new ValidationException("Id of event cannot be less than 0");
         }
         if (!eventRepository.existsById(eventId)) {
             throw new NotFoundException("Event with id=" + eventId + " was not found.");
         }
-        if (userId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(userId)) {
             throw new ValidationException("Id of user cannot be less than 0");
         }
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("User with id=" + userId + " was not found.");
         }
-        if (reqId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(reqId)) {
             throw new ValidationException("Id of participationRequest cannot be less than 0");
         }
         if (!participationRequestRepository.existsById(reqId)) {
@@ -449,7 +449,7 @@ public class EventServiceInBD implements EventService {
     public List<EventFullDtoOutput> getEventsAdmin(List<Long> users, List<String> states, List<Long> categories,
                                                    String rangeStart, String rangeEnd, Long from, Long size) {
         log.debug("Get list with events (ADMIN) by path : 'admin/events'");
-        if (size < 1 || from < 0) {
+        if (CompilationCheckValidationMethods.checkParamsOfPageFromAndSize(from, size)) {
             throw new NotCorrectArgumentsInMethodException("Size cannot be less than 1, " +
                     "also from cannot be less then 0");
         }
@@ -518,7 +518,7 @@ public class EventServiceInBD implements EventService {
     @Override
     public EventFullDtoOutput editEventByAdmin(Long eventId, NewEventDTOInput newEventDTOInput) {
         log.debug("Edit event by Admin and eventId follow this path : '/admin/events/{eventId}'");
-        if (eventId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(eventId)) {
             throw new ValidationException("Id of event cannot be less than 0");
         }
         if (!eventRepository.existsById(eventId)) {
@@ -549,7 +549,7 @@ public class EventServiceInBD implements EventService {
     @Override
     public EventFullDtoOutput publishEventByAdmin(Long eventId) {
         log.debug("Publish event by path : '/admin/events/{eventId}/publish'");
-        if (eventId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(eventId)) {
             throw new ValidationException("Id of event cannot be less than 0");
         }
         if (!eventRepository.existsById(eventId)) {
@@ -563,8 +563,7 @@ public class EventServiceInBD implements EventService {
                 Event updatedEvent = eventRepository.getReferenceById(eventId);
                 updatedEvent.setPublishedOn(now);
                 updatedEvent.setState(StatusOfEvent.PUBLISHED);
-                Event eventForReturn = eventRepository.save(updatedEvent);
-                return eventMapper.eventFullDtoOutputFromEvent(eventForReturn);
+                return eventMapper.eventFullDtoOutputFromEvent(eventRepository.save(updatedEvent));
             } else {
                 throw new ConflictException("Event with id=" + eventId + " cannot be published because of :" +
                         " 1. might status is not PENDING, your status is " +
@@ -581,7 +580,7 @@ public class EventServiceInBD implements EventService {
     @Override
     public EventFullDtoOutput rejectPublishEventByAdmin(Long eventId) {
         log.debug("Reject event by path : '/admin/events/{eventId}/reject'");
-        if (eventId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(eventId)) {
             throw new ValidationException("Id of event cannot be less than 0");
         }
         if (!eventRepository.existsById(eventId)) {

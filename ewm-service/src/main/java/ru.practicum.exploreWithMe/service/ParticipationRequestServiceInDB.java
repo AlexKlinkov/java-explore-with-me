@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import ru.practicum.exploreWithMe.auxiliaryObjects.StatusOfParticipationRequest;
+import ru.practicum.exploreWithMe.auxiliary_objects.CompilationCheckValidationMethods;
+import ru.practicum.exploreWithMe.auxiliary_objects.StatusOfParticipationRequest;
 import ru.practicum.exploreWithMe.dto.ParticipationRequestDtoOutput;
 import ru.practicum.exploreWithMe.exeption.ConflictException;
 import ru.practicum.exploreWithMe.exeption.NotFoundException;
@@ -41,7 +42,7 @@ public class ParticipationRequestServiceInDB implements ParticipationRequestServ
     @Override
     public List<ParticipationRequestDtoOutput> getRequestPrivate(Long userId) {
         log.debug("Return all participationRequest for Requester by path : '/users/{userId}/requests'");
-        if (userId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(userId)) {
             throw new ValidationException("Id of user cannot be less than 0");
         }
         if (!userRepository.existsById(userId)) {
@@ -59,13 +60,13 @@ public class ParticipationRequestServiceInDB implements ParticipationRequestServ
     @Override
     public ParticipationRequestDtoOutput createRequestPrivate(Long userId, Long eventId) {
         log.debug("Create participationRequest for Requester by path : '/users/{userId}/requests'");
-        if (userId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(userId)) {
             throw new ValidationException("Id of user cannot be less than 0");
         }
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("User with id=" + userId + " was not found.");
         }
-        if (eventId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(eventId)) {
             throw new ValidationException("Id of event cannot be less than 0");
         }
         if (!eventRepository.existsById(eventId)) {
@@ -85,10 +86,8 @@ public class ParticipationRequestServiceInDB implements ParticipationRequestServ
                 participationRequest.setRequestor(userRepository.getReferenceById(userId));
                 participationRequest.setStatus(StatusOfParticipationRequest.PENDING);
                 participationRequest.setCreated(now);
-                ParticipationRequest participationRequestForReturn =
-                        participationRequestRepository.save(participationRequest);
                 return participationRequestMapper.RequestDtoOutputFromParticipationRequest(
-                        participationRequestForReturn);
+                        participationRequestRepository.save(participationRequest));
             }
             return null;
         } catch (ServerError exception) {
@@ -99,13 +98,13 @@ public class ParticipationRequestServiceInDB implements ParticipationRequestServ
     @Override
     public ParticipationRequestDtoOutput cancelOwnRequestPrivate(Long userId, Long requestId) {
         log.debug("Requester refuse from participationRequest by path : '/users/{userId}/requests/{requestId}/cancel'");
-        if (userId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(userId)) {
             throw new ValidationException("Id of user cannot be less than 0");
         }
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("User with id=" + userId + " was not found.");
         }
-        if (requestId < 0) {
+        if (CompilationCheckValidationMethods.checkParamOfId(requestId)) {
             throw new ValidationException("Id of request cannot be less than 0");
         }
         if (!participationRequestRepository.existsById(requestId)) {

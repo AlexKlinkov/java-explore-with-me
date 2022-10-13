@@ -61,7 +61,7 @@ public class CompilationController {
     }
 
     @PatchMapping("/admin/compilations/{compId}/pin")
-    public void PinCompilationOnMainPageAdmin (@PathVariable Long compId) {
-        compilationService.PinCompilationOnMainPageAdmin(compId);
+    public void pinCompilationOnMainPageAdmin (@PathVariable Long compId) {
+        compilationService.pinCompilationOnMainPageAdmin(compId);
     }
 }

@@ -24,5 +24,5 @@ public interface CompilationService {
     // DELETE /admin/compilations/{compId}/pin
     void unPinCompilationFromMainPageAdmin(Long compId);
     // PATCH /admin/compilations/{compId}/pin
-    void PinCompilationOnMainPageAdmin(Long compId);
+    void pinCompilationOnMainPageAdmin(Long compId);
 }

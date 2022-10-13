@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import ru.practicum.exploreWithMe.auxiliaryObjects.Location;
+import ru.practicum.exploreWithMe.auxiliary_objects.Location;
 import ru.practicum.exploreWithMe.dto.EventFullDtoOutput;
 import ru.practicum.exploreWithMe.dto.EventShortDtoOutput;
 import ru.practicum.exploreWithMe.dto.NewEventDTOInput;
