@@ -12,6 +12,6 @@ API для Swagger :
 
 С помощью IntelliJ IDEA
 
-открываем проект с приложением
-запускаем команду mvn clean package в Maven
-запускаем команду docker-compose up в терминале IDEA (Docker daemon должен быть запущен)
+1. Открываем проект с приложением
+2. Запускаем команду mvn clean install в Maven
+3. Запускаем команду docker-compose up в терминале IDEA (Docker daemon должен быть запущен)
