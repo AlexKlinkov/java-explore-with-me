@@ -34,25 +34,18 @@ public class UserServiceInBD implements UserService {
     @Override
     public List<UserDtoOutputForAdmin> getUsers(List<Long> ids, Long from, Long size) {
         log.debug("Get users by path '/admin/users' with param 'ids'");
-        if (CompilationCheckValidationMethods.checkParamsOfPageFromAndSize(from, size)) {
-            throw new NotCorrectArgumentsInMethodException("Size cannot be less than 1, " +
-                    "also from cannot be less then 0");
-        }
-        try {
-            if (ids != null && !ids.isEmpty()) {
-                return userRepository.getAllByIdIn(ids).stream()
-                        .map((user) -> userMapper.userDtoOutputForAdminFromUser(user))
-                        .collect(Collectors.toList());
-            }
-            log.debug("Get users by path '/admin/users' with params 'from' (default is 0) and 'size' (default is 10)");
-            return userRepository.getAll().stream()
+        CompilationCheckValidationMethods.checkParamsOfPageFromAndSize(from, size);
+        if (ids != null && !ids.isEmpty()) {
+            return userRepository.getAllByIdIn(ids).stream()
                     .map((user) -> userMapper.userDtoOutputForAdminFromUser(user))
-                    .skip(from)
-                    .limit(size)
                     .collect(Collectors.toList());
-        } catch (ServerError exception) {
-            throw new ServerError("Error occurred");
         }
+        log.debug("Get users by path '/admin/users' with params 'from' (default is 0) and 'size' (default is 10)");
+        return userRepository.getAll().stream()
+                .map((user) -> userMapper.userDtoOutputForAdminFromUser(user))
+                .skip(from)
+                .limit(size)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -64,22 +57,16 @@ public class UserServiceInBD implements UserService {
             user.setEmail(userDTOInput.getEmail());
             return userMapper.userDtoOutputForAdminFromUser(userRepository.save(user));
         } catch (ConflictException exception) {
-            throw new ConflictException("User with this email " + userDTOInput.getEmail()  + " already exist");
+            throw new ConflictException("User with this email " + userDTOInput.getEmail() + " already exist");
         }
     }
 
     @Override
     public void deleteUserById(Long userId) {
-        if (CompilationCheckValidationMethods.checkParamOfId(userId)) {
-            throw new ValidationException("Id of user cannot be less than 0");
-        }
+        CompilationCheckValidationMethods.checkParamOfId(userId, "UserId");
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("User with id=" + userId + " was not found.");
         }
-        try {
-            userRepository.deleteById(userId);
-        } catch (ServerError exception) {
-            throw new ServerError("Error occurred");
-        }
+        userRepository.deleteById(userId);
     }
 }

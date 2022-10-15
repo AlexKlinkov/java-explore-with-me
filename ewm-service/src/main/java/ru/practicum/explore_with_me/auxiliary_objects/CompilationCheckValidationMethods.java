@@ -1,16 +1,18 @@
 package ru.practicum.explore_with_me.auxiliary_objects;
 
+import ru.practicum.explore_with_me.exeption.NotCorrectArgumentsInMethodException;
+import ru.practicum.explore_with_me.exeption.ValidationException;
+
 public class CompilationCheckValidationMethods {
-    public static boolean checkParamsOfPageFromAndSize(Long from, Long size) {
+    public static void checkParamsOfPageFromAndSize(Long from, Long size) throws NotCorrectArgumentsInMethodException {
         if (size < 1 || from < 0) {
-            return true;
+            throw new NotCorrectArgumentsInMethodException("Size cannot be less than 1, also " +
+                    "from cannot be less then 0");
         }
-        return false;
     }
-    public static boolean checkParamOfId(Long id){
+    public static void checkParamOfId(Long id, String nameId) throws ValidationException {
         if (id < 0) {
-            return true;
+            throw new ValidationException("Id cannot be less than 0, yours is - " + nameId + " = " + id);
         }
-        return false;
     }
 }
