@@ -54,10 +54,8 @@ public class CategoryServiceInBD implements CategoryService {
     @Override
     public CategoryDtoOutput updateCategory(NewCategoryDTOInput newCategoryDTOInput) {
         log.debug("Update category by path 'admin/categories'");
-        if (newCategoryDTOInput.getId() == null || newCategoryDTOInput.getName() == null ||
-                newCategoryDTOInput.getName().isEmpty()) {
-            throw new NotCorrectArgumentsInMethodException("Category cannot be with id=null or with name=null/empty");
-        }
+        CompilationCheckValidationMethods.checkParamOfId(newCategoryDTOInput.getId(), "CategoryId");
+        CompilationCheckValidationMethods.checkParamsEmptyNullName(newCategoryDTOInput.getName(), "Category");
         CompilationCheckValidationMethods.checkParamOfId(newCategoryDTOInput.getId(), "CategoryId");
         if (!categoryRepository.existsById(newCategoryDTOInput.getId())) {
             throw new NotFoundException("Category with id=" + newCategoryDTOInput.getId() + " was not found.");
@@ -71,13 +69,10 @@ public class CategoryServiceInBD implements CategoryService {
     @Override
     public CategoryDtoOutput createCategory(NewCategoryDTOInput newCategoryDTOInput) { // POST admin/categories
         log.debug("Create category by path 'admin/categories'");
-        if (newCategoryDTOInput.getName() == null || newCategoryDTOInput.getName().isEmpty()) {
-            throw new NotCorrectArgumentsInMethodException("Category cannot be with name=null/empty");
-        }
+        CompilationCheckValidationMethods.checkParamsEmptyNullName(newCategoryDTOInput.getName(), "Category");
         Category category = new Category();
         category.setName(newCategoryDTOInput.getName());
-        Category categoryForReturn = categoryRepository.save(category);
-        return categoryMapper.categoryDtoOutputFromCategory(categoryForReturn);
+        return categoryMapper.categoryDtoOutputFromCategory(categoryRepository.save(category));
     }
 
     @Override

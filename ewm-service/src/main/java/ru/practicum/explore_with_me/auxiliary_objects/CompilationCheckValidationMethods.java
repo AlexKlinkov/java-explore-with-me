@@ -15,4 +15,9 @@ public class CompilationCheckValidationMethods {
             throw new ValidationException("Id cannot be less than 0, yours is - " + nameId + " = " + id);
         }
     }
+    public static void checkParamsEmptyNullName(String name, String entity) throws NotCorrectArgumentsInMethodException {
+        if (name == null || name.isEmpty()) {
+            throw new NotCorrectArgumentsInMethodException(entity + " cannot be with name=null/empty");
+        }
+    }
 }
