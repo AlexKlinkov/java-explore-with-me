@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.practicum.explore_with_me.auxiliary_objects.StatInfoInput;
+import ru.practicum.explore_with_me.auxiliary_objects.StatsClient;
 import ru.practicum.explore_with_me.dto.EventFullDtoOutput;
 import ru.practicum.explore_with_me.dto.EventShortDtoOutput;
 import ru.practicum.explore_with_me.dto.NewEventDTOInput;
@@ -24,6 +25,8 @@ public class EventController {
     @Autowired
     @Qualifier("EventServiceInBD")
     private final EventService eventService;
+    @Autowired
+    private final StatsClient statsClient;
 
     @GetMapping("/events")
     public List<EventShortDtoOutput> getEventPublic(@RequestParam(value = "text", required = false) String text,
@@ -47,14 +50,7 @@ public class EventController {
         // here request will be redirected to stat service
         // go through controller, at that controller will be return value is void, in order to
         // don't show stat information to user
-        WebClient.create()
-                .post()
-                .uri("http://localhost:9090" + "/hit")
-                .body(Mono.just(new StatInfoInput("ewn-service", request.getRequestURI(),
-                        request.getRemoteAddr(), LocalDateTime.now().toString())), StatInfoInput.class)
-                .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToMono(StatInfoInput.class);
+        statsClient.StatsClient(request.getRequestURI(), request.getRemoteAddr());
         return eventsForReturn;
     }
 

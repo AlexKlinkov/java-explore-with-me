@@ -31,39 +31,39 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class UserControllerTest {
 
-        @InjectMocks
-        private UserController controller;
-        private final ObjectMapper mapper = new ObjectMapper();
-        @Mock
-        private UserServiceInBD userService;
-        private MockMvc mvc;
-        private UserDTOInput userDTOInput;
-        private UserDtoOutputForAdmin userDtoOutputForAdmin;
-        @BeforeEach
-        public void init () {
-            mvc = MockMvcBuilders
-                    .standaloneSetup(controller)
-                    .build();
+    @InjectMocks
+    private UserController controller;
+    private final ObjectMapper mapper = new ObjectMapper();
+    @Mock
+    private UserServiceInBD userService;
+    private MockMvc mvc;
+    private UserDTOInput userDTOInput;
+    private UserDtoOutputForAdmin userDtoOutputForAdmin;
+    @BeforeEach
+    public void init () {
+        mvc = MockMvcBuilders
+                .standaloneSetup(controller)
+                .build();
 
-            userDTOInput = new UserDTOInput("Max", "max@created.ru");
-            userDtoOutputForAdmin = new UserDtoOutputForAdmin(
-                    1L,"Max", "max@created.ru"
-            );
-        }
-        @Test
-        public void createUserTest() throws Exception {
-            when(userService.createUser(userDTOInput))
-                    .thenReturn(userDtoOutputForAdmin);
+        userDTOInput = new UserDTOInput("Max", "max@created.ru");
+        userDtoOutputForAdmin = new UserDtoOutputForAdmin(
+                1L,"Max", "max@created.ru"
+        );
+    }
+    @Test
+    public void createUserTest() throws Exception {
+        when(userService.createUser(userDTOInput))
+                .thenReturn(userDtoOutputForAdmin);
 
-            mvc.perform(post("/admin/users")
-                            .content(mapper.writeValueAsString(userDTOInput))
-                            .characterEncoding(StandardCharsets.UTF_8)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.name", is(userDtoOutputForAdmin.getName())))
-                    .andExpect(jsonPath("$.email", is(userDtoOutputForAdmin.getEmail())));
-        }
+        mvc.perform(post("/admin/users")
+                        .content(mapper.writeValueAsString(userDTOInput))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is(userDtoOutputForAdmin.getName())))
+                .andExpect(jsonPath("$.email", is(userDtoOutputForAdmin.getEmail())));
+    }
 
     @Test
     public void getUsersTest() throws Exception {
