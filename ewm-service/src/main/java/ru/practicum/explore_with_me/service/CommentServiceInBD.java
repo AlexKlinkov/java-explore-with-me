@@ -50,17 +50,16 @@ public class CommentServiceInBD implements CommentService {
             throw new NotFoundException("Event with id=" + eventId + " was not found.");
         }
         // 1. Проверяем, что комментарий хочет оставить не инициатор события
-        if (eventRepository.getReferenceById(eventId).getInitiator().getId() != userId) {
-            Comment comment = new Comment();
-            comment.setComment(newCommentDTOInput.getCommentText());
-            comment.setEvent(eventRepository.getReferenceById(eventId));
-            comment.setAuthor(userRepository.getReferenceById(userId));
-            comment.setCreated(now);
-            return commentMapper.commentDtoOutputFromComment(commentRepository.save(comment));
-        } else {
+        if (eventRepository.getReferenceById(eventId).getInitiator().getId() == userId) {
             throw new ConflictException("User with id=" + userId + " is initiator of this event, so he cannot " +
                     "add comment to own event");
         }
+        Comment comment = new Comment();
+        comment.setComment(newCommentDTOInput.getCommentText());
+        comment.setEvent(eventRepository.getReferenceById(eventId));
+        comment.setAuthor(userRepository.getReferenceById(userId));
+        comment.setCreated(now);
+        return commentMapper.commentDtoOutputFromComment(commentRepository.save(comment));
     }
 
     @Override

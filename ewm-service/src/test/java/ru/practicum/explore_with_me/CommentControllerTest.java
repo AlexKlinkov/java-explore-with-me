@@ -83,7 +83,7 @@ public class CommentControllerTest {
         when(commentServiceInBD.updateComment(any(), any(), any()))
                 .thenReturn(commentDtoOutput);
 
-        mvc.perform(patch("/events/comments/1")
+        mvc.perform(put("/events/comments/1")
                         .content(mapper.writeValueAsString(newCommentDTOInput))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)

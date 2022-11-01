@@ -32,8 +32,8 @@ public class CommentController {
         commentService.deleteComment(userId, comId);
     }
 
-    @PatchMapping("/events/comments/{comId}")
-    public CommentDtoOutput updateCommentt (@RequestHeader(value = "X-Sharer-User-Id") Long userId,
+    @PutMapping("/events/comments/{comId}")
+    public CommentDtoOutput updateComment (@RequestHeader(value = "X-Sharer-User-Id") Long userId,
                                                   @PathVariable Long comId,
                                                   @RequestBody CommentDTOInputForEdit commentDTOInputForEdit) {
         return commentService.updateComment(userId, comId, commentDTOInputForEdit);

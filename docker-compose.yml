@@ -13,8 +13,10 @@ services:
 
   stat-db:
     image: postgres:14-alpine
-    ports:
-      - "5444:5432"
+    volumes:
+      - /var/lib/postgresql/data/
+    expose:
+      - 5432
     environment:
       - POSTGRES_DB=stat
       - POSTGRES_USER=Admin
@@ -35,8 +37,10 @@ services:
 
   ewm-db:
     image: postgres:14-alpine
-    ports:
-      - "5333:5432"
+    volumes:
+      - /var/lib/postgresql/data/
+    expose:
+      - 5432
     environment:
       - POSTGRES_DB=ewm
       - POSTGRES_USER=Admin
