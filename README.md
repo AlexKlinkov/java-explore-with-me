@@ -10,16 +10,25 @@
 - Получать статистику просмотров события, 
 - Оставлять комментарии к событию.
 
-API для Swagger :
+## Требования к приложению (Спецификация). API для Swagger :
 
 Главный сервер: [ewm-main-service-spec.json](https://github.com/AlexKlinkov/explore-with-me/blob/main/ewm-main-service-spec.json)
-
 Сервер статистики: [ewm-stats-service-spec.json](https://github.com/AlexKlinkov/explore-with-me/blob/main/ewm-stats-service-spec.json)
 
-Запуск приложения:
+## Запуск приложения:
 
 С помощью IntelliJ IDEA
 
 1. Открываем проект
-2. Запускаем команду "mvn clean install" в Maven
-3. Запускаем команду docker-compose up в терминале IDEA (Docker daemon должен быть запущен)
+2. Запускаем команду **mvn clean install** в Maven
+3. Запускаем команду **docker-compose up** в терминале IDEA (Docker daemon должен быть запущен)
+
+## Стек
+
+- Spring Boot 2.7.2
+- Maven
+- MapStruct
+- Lombok
+- ORM Hibernate
+- PostgreSQL
+- Docker
