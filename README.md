@@ -25,11 +25,11 @@
 2. Запускаем команду **mvn clean install** в Maven
 3. Запускаем команду **docker-compose up** в терминале IDEA (Docker daemon должен быть запущен)
 
-## Стек
+## Стек технологий
 
 - Spring Boot 2.7.2
 - Maven
-- MapStruct
+- MapStruct 1.5.2
 - Lombok
 - ORM Hibernate
 - PostgreSQL
