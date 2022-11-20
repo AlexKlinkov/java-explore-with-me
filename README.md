@@ -10,9 +10,11 @@
 - Получать статистику просмотров события, 
 - Оставлять комментарии к событию.
 
-## Требования к приложению (Спецификация). API для Swagger :
+## Требования к приложению (Спецификация) 
+### API для Swagger :
 
 Главный сервер: [ewm-main-service-spec.json](https://github.com/AlexKlinkov/explore-with-me/blob/main/ewm-main-service-spec.json)
+
 Сервер статистики: [ewm-stats-service-spec.json](https://github.com/AlexKlinkov/explore-with-me/blob/main/ewm-stats-service-spec.json)
 
 ## Запуск приложения:
