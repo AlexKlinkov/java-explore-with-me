@@ -1,4 +1,6 @@
-# Дипломный проект : java-explore-with-me
+# java-explore-with-me
+
+## Backend web application
 
 ## Описание/Функциональность
 
@@ -29,8 +31,10 @@
 
 - Spring Boot 2.7.2
 - Maven
-- MapStruct 1.5.2
-- Lombok
-- ORM Hibernate
 - PostgreSQL
+- ORM Hibernate
+- MapStruct
+- Lombok
+- JUnit
+- Mockito
 - Docker
