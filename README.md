@@ -1,6 +1,6 @@
 # java-explore-with-me
 
-## Backend web application
+## Backend of web application
 
 ## Описание/Функциональность
 
