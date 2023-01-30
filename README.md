@@ -33,7 +33,7 @@
 2. IntelliJ IDEA сообщит, что "Maven Build Scripts Found", следует нажать "Load".
 3. Запускаем команду mvn clean install.
 4. Запускаем команду docker-compose up в терминале IDEA, убедившись, что находимся в той же директории, что и файл "docker-compose.yml", при этом Docker daemon должен быть запущен.
-5. Так же можно, загрузить базовую коллекцию для сервисов ([Ссылка на коллекцию](https://github.com/AlexKlinkov/java-explore-with-me/tree/main/postman)) в Postman и подергать разные ручки, посмотреть как работает приложение.
+5. Так же можно, загрузить базовую коллекцию для jосновного сервиса ([Ссылка на коллекцию](https://github.com/AlexKlinkov/java-explore-with-me/blob/main/ewm-main-service.json)) в Postman и подергать разные ручки, посмотреть как работает приложение.
 
 ## Technology stack:
 
