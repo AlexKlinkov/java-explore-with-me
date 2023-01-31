@@ -21,9 +21,9 @@
 ## Specification of app:
 ### API for Swagger :
 
-Главный сервер: [ewm-main-service-spec.json](https://github.com/AlexKlinkov/explore-with-me/blob/main/ewm-main-service-spec.json)
+Главный сервер: [ewm-main-service-spec.json](https://github.com/AlexKlinkov/java-explore-with-me/blob/main/ewn-main-service-specification.json)
 
-Сервер статистики: [ewm-stats-service-spec.json](https://github.com/AlexKlinkov/explore-with-me/blob/main/ewm-stats-service-spec.json)
+Сервер статистики: [ewm-stats-service-spec.json](https://github.com/AlexKlinkov/java-explore-with-me/blob/main/ewm-stats-service-specification.json)
 
 ## Instruction of launch app::
 
@@ -42,7 +42,7 @@
 - Maven 4.0.0
 - MapStruct 1.5.2.Final
 - Lombok 1.18.24
-- WebClient 2.6.4
+- WebFlux 5.3.22
 - ORM Hibernate 5.6.10
 - PostgreSQL 14.5
 - Mockito 4.5.1
